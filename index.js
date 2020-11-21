@@ -4,7 +4,7 @@ const express = require("express");
 const socket = require("socket.io");
 
 // App Setup
-const PORT = process.env.PORT || 3002;
+const PORT = 3002;
 const app = express();
 const server = app.listen(PORT, function (){
     console.log("---- Machi Koro ----");
@@ -69,4 +69,8 @@ const io = socket(server);
 io.on("connection", function (socket) {
     console.log("Made socket connection");
     io.emit("start_board", game_stack);
+
+    socket.on("test", function() {
+        console.log('test')
+    });
 });
