@@ -1,0 +1,40 @@
+html, body{
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    font-size: 0;
+    overflow: hidden;
+}
+
+#container1{
+    height: 100vh;
+    display: inline-block;
+    float: left;
+}
+
+#field{
+    background: green;
+    width: 80vw;
+    height: 30vh;
+}
+#decks{
+    background: blue;
+    width: 30vw;
+    height: 70vh;
+    display: inline-block;
+    float: left;
+}
+#sidebar{
+    background: gray;
+    width: 20vw;
+    height: 100vh;
+    display: inline-block;
+}
+#opp{
+    background: red;
+    width: 50vw;
+    height: 70vh;
+    display: inline-block;
+}
