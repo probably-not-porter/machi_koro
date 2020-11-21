@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   id="svg8883"
+   viewBox="0 0 24.999999 24.999999"
+   height="25"
+   width="25">
+  <defs
+     id="defs8885">
+    <clipPath
+       id="clip9718">
+      <path
+         d="m 250,346 5,0 0,5 -5,0 z m 0,0"
+         id="path30075" />
+    </clipPath>
+    <clipPath
+       id="clip9719">
+      <path
+         d="m 240.44141,344.57812 c -0.9375,0 -1.70704,0.76563 -1.70704,1.70704 l 0,50.41796 c 0,0.94141 0.76954,1.70704 1.70704,1.70704 l 31.66796,0 c 0.9375,0 1.70704,-0.76563 1.70704,-1.70704 l 0,-50.41796 c 0,-0.94141 -0.76954,-1.70704 -1.70704,-1.70704 z m 0,0"
+         id="path30078" />
+    </clipPath>
+    <clipPath
+       id="clip9720">
+      <path
+         d="m 251,346 3,0 0,5 -3,0 z m 0,0"
+         id="path30081" />
+    </clipPath>
+    <clipPath
+       id="clip9721">
+      <path
+         d="m 240.44141,344.57812 c -0.9375,0 -1.70704,0.76563 -1.70704,1.70704 l 0,50.41796 c 0,0.94141 0.76954,1.70704 1.70704,1.70704 l 31.66796,0 c 0.9375,0 1.70704,-0.76563 1.70704,-1.70704 l 0,-50.41796 c 0,-0.94141 -0.76954,-1.70704 -1.70704,-1.70704 z m 0,0"
+         id="path30084" />
+    </clipPath>
+  </defs>
+  <metadata
+     id="metadata8888">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0,-1027.3622)"
+     id="layer1">
+    <g
+       style="fill:#000000"
+       transform="matrix(0,-10.711224,-10.711224,0,0,1039.8515)"
+       id="g2552">
+      <path
+         id="path2554"
+         style="fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         d="m 0,0 c 0.643,0 1.166,-0.524 1.166,-1.169 0,-0.642 -0.523,-1.165 -1.166,-1.165 -0.646,0 -1.168,0.523 -1.168,1.165 C -1.168,-0.524 -0.646,0 0,0" />
+    </g>
+    <path
+       id="path2558"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       d="m 21.096827,1037.5196 -1.210368,-3.6954 -0.149958,0 -14.4387295,0 -0.1606682,0 -1.1889455,3.6954 1.9065971,0 0,8.3762 13.5496991,0 0,-8.3762" />
+  </g>
+</svg>

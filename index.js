@@ -32,7 +32,7 @@ let wheat_field = new CardType("Wheat Field", "Wheat_Field.svg", "blue", "wheat"
 let ranch = new CardType("Ranch", "Ranch.svg", "blue", "cow", 1, [2], 6);
 let forest = new CardType("Forest", "Forest.svg", "blue", "gear", 3, [5], 6);
 let mine = new CardType("Mine", "Mine.svg", "blue", "gear", 6, [9], 6);
-let apple_orchard = new CardType("Apple Orchard", "Apple_Orchard.svg", "wheat", 3, [10], 6)
+let apple_orchard = new CardType("Apple Orchard", "Apple_Orchard.svg", "green","wheat", 3, [10], 6);
 
 // green
 let bakery = new CardType("Bakery", "Bakery.svg", "green", "bread", 1, [2,3], 6);
@@ -67,10 +67,9 @@ let game_stack = [wheat_field, ranch, forest, mine, apple_orchard, bakery, conve
 const io = socket(server);
 
 io.on("connection", function (socket) {
-    console.log("Made socket connection");
-    io.emit("start_board", game_stack);
-
-    socket.on("test", function() {
-        console.log('test')
+    console.log("--> Made socket connection");
+    socket.on("request_boardstate", function() {
+        io.emit("display_boardstate", game_stack);
     });
+    
 });

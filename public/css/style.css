@@ -15,26 +15,59 @@ html, body{
 }
 
 #field{
-    background: green;
+    border-top: 1px solid black;
+    background: darkgray;
     width: 80vw;
     height: 30vh;
 }
 #decks{
-    background: blue;
+    background: gray;
+    border-right: 1px solid black;
     width: 30vw;
     height: 70vh;
     display: inline-block;
     float: left;
+    margin-left: -1px;
 }
 #sidebar{
-    background: gray;
+    background: lightgray;
+    border-left: 1px solid black;
+    margin-right: -1px;
     width: 20vw;
     height: 100vh;
     display: inline-block;
 }
 #opp{
-    background: red;
+    background: gray;
     width: 50vw;
     height: 70vh;
     display: inline-block;
+}
+.card{
+    width: 6vw;
+    height: 9vw;
+    display: inline-block;
+    box-sizing: border-box;
+}
+.card img{
+    position: absolute;
+    width: 6vw;
+    height: 9vw;
+    box-sizing: border-box;
+}
+.card span{
+    position: absolute;
+    z-index: 2;
+    font-size: 30px;
+    color: white;
+    text-emphasis: bold;
+    background-color: rgba(0,0,0,0.5)
+}
+.card:hover img{
+    border: 3px solid red;
+    box-shadow: inset 0px 0px 0px 10px red;
+}
+
+#stats{
+    font-size: 12px;
 }
