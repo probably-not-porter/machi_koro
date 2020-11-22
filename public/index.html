@@ -4,39 +4,51 @@
         <link rel="stylesheet" href='./css/style.css'>
     </head>
     <body>
-        <div id='container1'>
-            <div id='decks'></div>
-            <div id='opp'></div>
-            <div id='field'></div>
+        <div id='lobby'>
+            <button id='new_game'>Create Game</button>
+            <ul id='active_games'>
+
+            </ul>
         </div>
-        <div id='sidebar'>
-            <div id=stats>
-                <table>
-                    <tr>
-                        <td><img src='./icon/Bread.svg'></td>
-                        <td>0</td>
-                        <td><img src='./icon/Cow.svg'></td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td><img src='./icon/Cup.svg'></td>
-                        <td>0</td>
-                        <td><img src='./icon/Factory.svg'></td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td><img src='./icon/Fruit.svg'></td>
-                        <td>0</td>
-                        <td><img src='./icon/Gear.svg'></td>
-                        <td>0</td>
-                    </tr>
-                    <tr>
-                        <td><img src='./icon/Major.svg'></td>
-                        <td>0</td>
-                        <td><img src='./icon/Wheat.svg'></td>
-                        <td>0</td>
-                    </tr>
-                </table>
+        <div id='waiting'>
+
+        </div>
+        <div id='game'>
+            <div id='container1'>
+                <div id='decks'></div>
+                <div id='opp'></div>
+                <div id='field'></div>
+            </div>
+            <div id='sidebar'>
+                <div id=stats>
+                    <span>COINS: </span><span id='coins-val'></span>
+                    <table>
+                        <tr>
+                            <td><img src='./icon/Bread.svg'></td>
+                            <td id='bread-val'>0</td>
+                            <td><img src='./icon/Cow.svg'></td>
+                            <td id='cow-val'>0</td>
+                        </tr>
+                        <tr>
+                            <td><img src='./icon/Cup.svg'></td>
+                            <td id='cup-val'>0</td>
+                            <td><img src='./icon/Factory.svg'></td>
+                            <td id='factory-val'>0</td>
+                        </tr>
+                        <tr>
+                            <td><img src='./icon/Fruit.svg'></td>
+                            <td id='fruit-val'>0</td>
+                            <td><img src='./icon/Gear.svg'></td>
+                            <td id='gear-val'>0</td>
+                        </tr>
+                        <tr>
+                            <td><img src='./icon/Major.svg'></td>
+                            <td id='tower-val'>0</td>
+                            <td><img src='./icon/Wheat.svg'></td>
+                            <td id='wheat-val'>0</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
 

@@ -7,6 +7,28 @@ html, body{
     font-size: 0;
     overflow: hidden;
 }
+#game{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 0;
+}
+#lobby{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    background: rgb(139, 86, 139);
+    font-size: 15px;
+}
+#waiting{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 0;
+    background: rgb(116, 116, 168);
+    font-size: 15px;
+}
 
 #container1{
     height: 100vh;
@@ -45,14 +67,14 @@ html, body{
 }
 .card{
     width: 6vw;
-    height: 9vw;
+    height: 8vw;
     display: inline-block;
     box-sizing: border-box;
 }
 .card img{
     position: absolute;
     width: 6vw;
-    height: 9vw;
+    height: 8vw;
     box-sizing: border-box;
 }
 .card span{
