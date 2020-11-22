@@ -4,7 +4,7 @@ const express = require("express");
 const socket = require("socket.io");
 
 // App Setup
-const PORT = 3002;
+const PORT = process.env.PORT || 3002;
 const app = express();
 const server = app.listen(PORT, function (){
     console.log("---- Machi Koro ----");
