@@ -31,7 +31,6 @@ $( document ).ready(function() {
     socket.on("receive_gamelist", function (list) {
         if (in_game == false){
             // update waiting screen
-            document.getElementById("waiting").innerText = "";
             let current_game = null;
             for (let x = 0; x < list.length; x++){
                 for (let y = 0; y < list[x].players.length; y++){
@@ -47,13 +46,16 @@ $( document ).ready(function() {
                     document.getElementById("game").style.zIndex = 1;
                     document.getElementById("waiting").style.zIndex = 0;
                 }
-                document.getElementById("waiting").innerHTML = "<h1>" + current_game.name + "</h1>";
-                document.getElementById("waiting").innerHTML += " (waiting) \n" + current_game.players.length + "/4 \n\n";
+                document.getElementById("game_name").innerText = current_game.name;
+                document.getElementById("game_players").innerText = current_game.players.length + "/4 (waiting)";
+                document.getElementById("game_players_list").innerHTML = "";
                 for (x in current_game.players){
-                    document.getElementById("waiting").innerText += "\n" + current_game.players[x].name + "\n";
+                    var li = document.createElement("li");
+                    li.innerText = current_game.players[x].name;
+                    document.getElementById("game_players_list").appendChild(li);
                 }
                 if (current_game.players.length > 1){
-                    document.getElementById("waiting").innerHTML += "<button class='button' id='button-"+current_game.id+"'>START GAME</button>";
+                    document.getElementById("waiting-button-wrapper").innerHTML = "<button class='button' id='button-"+current_game.id+"'>START GAME</button>";
                     document.getElementById("button-" + current_game.id).addEventListener("click", function () {
                         start_current(current_game.id)
                     });
