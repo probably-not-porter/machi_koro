@@ -47,12 +47,13 @@ $( document ).ready(function() {
                     document.getElementById("game").style.zIndex = 1;
                     document.getElementById("waiting").style.zIndex = 0;
                 }
-                document.getElementById("waiting").innerText = current_game.name + " (waiting) \n" + current_game.players.length + "/4 \n\n";
+                document.getElementById("waiting").innerHTML = "<h1>" + current_game.name + "</h1>";
+                document.getElementById("waiting").innerHTML += " (waiting) \n" + current_game.players.length + "/4 \n\n";
                 for (x in current_game.players){
                     document.getElementById("waiting").innerText += "\n" + current_game.players[x].name + "\n";
                 }
                 if (current_game.players.length > 1){
-                    document.getElementById("waiting").innerHTML += "<button id='button-"+current_game.id+"'>START GAME</button>";
+                    document.getElementById("waiting").innerHTML += "<button class='button' id='button-"+current_game.id+"'>START GAME</button>";
                     document.getElementById("button-" + current_game.id).addEventListener("click", function () {
                         start_current(current_game.id)
                     });
@@ -62,6 +63,7 @@ $( document ).ready(function() {
             // update lobby board
             var game_list = document.getElementById("active_games");
             game_list.innerHTML = "";
+            
             for (let x = 0; x < list.length; x++){
                 let game  = list[x];
                 if (game.state == 0){
@@ -79,6 +81,11 @@ $( document ).ready(function() {
                         document.getElementById("waiting").style.zIndex = 1;
                     });
                 }
+            }
+            if (game_list.innerHTML == ""){
+                var li = document.createElement("li");
+                li.innerText = "No open games. (Maybe make one?)"
+                game_list.appendChild(li);
             }
         }else{
 
@@ -107,17 +114,7 @@ $( document ).ready(function() {
         // SELF
         console.log('--> display player cards');
         let self_player = null;
-        let stats = {
-            "coins": 0,
-            "bread": 0,
-            "cup": 0,
-            "fruit": 0,
-            "tower": 0,
-            "cow": 0,
-            "factory": 0,
-            "gear": 0,
-            "wheat": 0
-        }
+        let stats = {"coins": 0, "bread": 0, "cup": 0, "fruit": 0, "tower": 0, "cow": 0, "factory": 0, "gear": 0, "wheat": 0}
         for (x in state.players){
             if (state.players[x].id = self_id){
                 self_player = state.players[x]

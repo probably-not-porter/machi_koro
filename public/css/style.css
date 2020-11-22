@@ -18,8 +18,10 @@ html, body{
     height: 100%;
     position: absolute;
     z-index: 1;
-    background: rgb(139, 86, 139);
+    background: rgb(190, 168, 190);
     font-size: 15px;
+    padding-left: 20px;
+    padding-top: 10px;
 }
 #waiting{
     width: 100%;
@@ -93,3 +95,35 @@ html, body{
 #stats{
     font-size: 12px;
 }
+h1{
+    margin-bottom: 100px;
+}
+h2{
+    text-align: center;
+}
+#active_games_panel{
+    border: 1px solid black;
+    width: 400px;
+    background: rgba(255,255,255,0.2);
+    margin-bottom: 100px;
+}
+#active_games li{
+    background: rgba(255,255,255,0.4);
+    list-style-type: none;
+    border: 1px solid black;
+    margin-left: -40px;
+    padding: 10px;
+}
+
+.button {
+    background-color: rgb(139, 86, 139);
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
