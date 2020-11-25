@@ -15,7 +15,7 @@
             </div>
             <button class='button' id='new_game'>Create New Game</button>
         </div>
-        <div id='waiting'>
+        <div id='waiting_lobby'>
             <h1 id='game_name'>GAME</h1>
             <h3 id='game_players'></h3>
             <h3>Current Players:</h3>
@@ -31,6 +31,8 @@
                 <div id='field'></div>
             </div>
             <div id='sidebar'>
+                <div id='player_name'></div>
+                <div id='current_turn'></div>
                 <div id=stats>
                     <table>
                         <tr>
@@ -63,10 +65,22 @@
                         </tr>
                     </table>
                 </div>
-                <div id='dice_tray'>
-                    <span id='roll_num'></span><br>
-                    <button id='roll1' class='button'>Roll 1</button>
-                    <button id='roll2' class='button'>Roll 2</button>
+                <div id='actions'>
+                    <div id='waiting'>
+                        waiting...
+                    </div>
+                    <div id='rolling'>
+                        <span id='roll_num'></span><br>
+                        <button id='roll1' class='button'>Roll 1</button>
+                        <button id='roll2' class='button'>Roll 2</button>
+                    </div>
+                    <div id='buying'>
+                        Buy one establishment or end your turn<br>
+                        <button id='end_turn_buy' class='button'>End Turn</button>
+                    </div>
+                    <div id='ending'>
+                        <button id='end_turn' class='button'>End Turn</button>
+                    </div>
                 </div>
             </div>
         </div>

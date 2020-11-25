@@ -33,8 +33,11 @@ class Player { // create a new player
         this.name = name;
         this.id = id;
         this.cards = [
-            new CardType("Wheat Field", "Wheat_Field.svg", "blue", "wheat", 1, [1], 1),
-            new CardType("Bakery", "Bakery.svg", "green", "bread", 1, [2,3], 1)
+            new CardType("Wheat Field", "Wheat_Field.svg", "blue", "wheat", 1, [1], 1,
+            "WHEAT FIELD\nActivation: 1\nCost: 1\nGet 1 coin from the bank, on anyone's turn."), 
+
+            new CardType("Bakery", "Bakery.svg", "green", "bread", 1, [2,3], 1,
+            "BAKERY\nActivation: 2-3\n Cost: 1\nGet 1 coin from bank, on your turn only")
         ];
         this.coins = 0;
     }
@@ -47,61 +50,61 @@ class BoardState { // create a new board state
         this.name = name;
         this.market = [
             new CardType("Wheat Field", "Wheat_Field.svg", "blue", "wheat", 1, [1], 6,
-            "WHEAT FIELD\nActivation: 1\nCost: 1\nYou get 1 coin from the bank, on anyone's turn."), 
+            "WHEAT FIELD\nActivation: 1\nCost: 1\nGet 1 coin from the bank, on anyone's turn."), 
 
             new CardType("Ranch", "Ranch.svg", "blue", "cow", 1, [2], 6,
-            "RANCH\nActivation: 2\n Cost: 1\nYou get 1 coin from the bank, on anyone's turn."), 
+            "RANCH\nActivation: 2\n Cost: 1\nGet 1 coin from the bank, on anyone's turn."), 
 
             new CardType("Forest", "Forest.svg", "blue", "gear", 3, [5], 6,
-            "FOREST\nActivation: 5\n Cost: 3\nYou get 1 coin from the bank, on anyone's turn."), 
+            "FOREST\nActivation: 5\n Cost: 3\nGet 1 coin from the bank, on anyone's turn."), 
 
             new CardType("Mine", "Mine.svg", "blue", "gear", 6, [9], 6,
-            "Activation: 1\n Cost: 1\n"), 
+            "MINE\nActivation: 9\n Cost: 6\nGet 5 coins from the bank, on anyone’s turn."), 
 
             new CardType("Apple Orchard", "Apple_Orchard.svg", "green","wheat", 3, [10], 6,
-            "Activation: 1\n Cost: 1\n"), 
+            "APPLE ORCHARD\nActivation: 10\n Cost: 3\nGet 3 coins from the bank, on anyone’s turn."), 
 
             new CardType("Bakery", "Bakery.svg", "green", "bread", 1, [2,3], 6,
-            "Activation: 1\n Cost: 1\n"), 
+            "BAKERY\nActivation: 2-3\n Cost: 1\nGet 1 coin from bank, on your turn only"), 
 
             new CardType("Convenience Store", "Convenience_Store.svg", "green", "bread", 2,4, 6,
-            "Activation: 1\n Cost: 1\n"), 
+            "CONVENIENCE STORE\nActivation: 4\n Cost: 2\nGet 3 coins from the bank, on your turn only."), 
 
             new CardType("Cheese Factory", "Cheese_Factory.svg", "green", "factory", 5, 7, 6,
-            "Activation: 1\n Cost: 1\n"), 
+            "CHEESE FACTORY\nActivation: 7\n Cost: 5\nGet 3 coins from the bank for every [Cow] establishment you own, on your turn only."), 
 
             new CardType("Furniture Factory", "Furniture_Factory.svg", "green", "factory", 3, 8, 6,
-            "Activation: 1\n Cost: 1\n"), 
+            "FURNITURE FACTORY\nActivation: 8\n Cost: 3\nGet 3 coins from the bank for every [Gear] establishment you own, on your turn only."), 
 
             new CardType("Fruit and Vegetable Market", "Fruit_and_Vegetable_Market.svg", "green", "fruit", 2, [11,12], 6,
-            "Activation: 1\n Cost: 1\n"), 
+            "FRUIT AND VEGETABLE MARKET\nActivation: 11-12\n Cost: 2\nGet 2 coins from the bank for every [Wheat] establishment you own, on your turn only."), 
 
             new CardType("Cafe", "Cafe.svg", "red", "cup", 2, 3, 6,
-            "Activation: 1\n Cost: 1\n"), 
+            "CAFE\nActivation: 3\n Cost: 2\nGet 1 coin from the player who rolled the dice."), 
 
             new CardType("Family Restaurant", "Family_Restaurant.svg", "red", "cup", 3, [9,10], 6,
-            "Activation: 1\n Cost: 1\n"), 
+            "FAMILY RESTAURANT\nActivation: 9-10\n Cost: 3\nGet 2 coins from the player who rolled the dice."), 
 
             new CardType("Stadium", "Stadium.svg", "purple", "tower", 7, 6, 4,
-            "Activation: 1\n Cost: 1\n"), 
+            "STADIUM\nActivation: 6\n Cost: 6\nGet 2 coins from all players, on your turn only."), 
 
             new CardType("TV Station", "TV_Station.svg", "purple", "tower", 7, 6, 4,
-            "Activation: 1\n Cost: 1\n"), 
+            "TV STATION\nActivation: 6\n Cost: 7\nTake 5 coins from any one player, on your turn only."), 
 
             new CardType("Business Center", "Business_Center.svg", "purple", "tower", 8, 6, 4,
-            "Activation: 1\n Cost: 1\n"), 
+            "BUSINESS CENTER\nActivation: 6\n Cost: 8\nTrade one non-[tower] establishment with another player, on your turn only"), 
 
             new CardType("Train Station", "Train_Station.svg", "gold", "tower", 4, null, null,
-            ""), 
+            "TRAIN STATION\nCost: 4\nYou may roll 1 or 2 dice."), 
 
             new CardType("Shopping Mall", "Shopping_Mall.svg", "gold", "tower", 10, null, null,
-            ""), 
+            "SHOPPING MALL\nCost: 10\nEach of your [cup] and [bread] establishments earn +1 coin."), 
 
             new CardType("Amusement Park", "Amusement_Park.svg", "gold", "tower", 16, null, null,
-            ""), 
+            "AMUSEMENT PARK\nCost: 16\nIf you roll doubles, take another turn after this one."), 
             
             new CardType("Radio Tower", "Radio_Tower.svg", "gold", "tower", 22, null, null,
-            "")
+            "RADIO TOWER\nCost: 22\nOnce every turn, you can choose to re-roll your dice.")
         ];
         this.players = [];
         this.turn = 0;
