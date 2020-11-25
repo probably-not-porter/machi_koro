@@ -81,9 +81,9 @@ io.on("connection", function (socket) {
     console.log("--> Made socket connection");
 
     socket.on("join_game", function(data) {
-        socket.join(data[0])
+        console.log("--> Player '" + data[2] + "' has joined game " + data[0]);
         let game = null;
-        let self_player = new Player("test player name", data[1]);
+        let self_player = new Player(data[2], data[1]);
         for (x in _game_list){
             if (_game_list[x].id == data[0]){
                 game = _game_list[x]
@@ -101,18 +101,27 @@ io.on("connection", function (socket) {
         }
     });
     socket.on("start_game", function(id) {
+        console.log("--> Starting game " + id);
         for (x in _game_list){
             if (_game_list[x].id == id){
                 _game_list[x].state = 1;
             }
         }
         io.emit("receive_gamelist", _game_list);
+        let game = null;
+        for (x in _game_list){
+            if (_game_list[x].id == id){
+                game = _game_list[x]
+            }
+        }
+        io.emit("update_boardstate", game); // send boardstate to client
     });
 
     socket.on("create_game", function(data) {
+        console.log("--> Player '" + data[3] + "' has created game " + data[1]);
         socket.join(data[1])
         let new_game = new BoardState(data[0], data[1]);
-        let self_player = new Player("test player name", data[2]);
+        let self_player = new Player(data[3], data[2]);
         new_game.players.push(self_player);
         _game_list.push(new_game);
         io.emit("receive_gamelist", _game_list);
@@ -123,13 +132,14 @@ io.on("connection", function (socket) {
 
 
     socket.on("request_boardstate", function(id) { // client is requesting boardstate
+        console.log("--> request boardstate")
         let game = null;
         for (x in _game_list){
             if (_game_list[x].id == id){
                 game = _game_list[x]
             }
         }
-        io.to(id).emit("update_boardstate", game); // send boardstate to client
+        io.emit("update_boardstate", game); // send boardstate to client
     });
     
 });

@@ -68,6 +68,10 @@ html, body{
     width: 50vw;
     height: 70vh;
     display: inline-block;
+    font-size: 12px;
+}
+.opp_block{
+    border: 1px solid black;
 }
 .card{
     width: 6vw;
