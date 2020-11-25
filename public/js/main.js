@@ -12,7 +12,10 @@ $( document ).ready(function() {
 
     socket.emit("request_gamelist"); // request boardstate
 
-    // create new game
+
+    // BUTTON LISTENERS
+
+    // create new game (lobby)
     document.getElementById("new_game").addEventListener("click", function () {
         console.log("--> create game")
         var name = prompt("Enter a name for your game");
@@ -22,6 +25,23 @@ $( document ).ready(function() {
             document.getElementById("waiting").style.zIndex = 1;
         }
     }); 
+
+    // dice (in game)
+
+    document.getElementById("roll1").disabled = true; 
+    document.getElementById("roll2").disabled = true; 
+
+    document.getElementById("roll1").addEventListener("click", function () {
+        let roll = 1 + Math.floor(Math.random()*6);
+        document.getElementById("roll_num").innerText = roll;
+        // check cards
+    });
+    document.getElementById("roll2").addEventListener("click", function () {
+        let roll = 1 + Math.floor(Math.random()*6);
+        let roll2 = 1 + Math.floor(Math.random()*6);
+        document.getElementById("roll_num").innerText = roll + ", " + roll2;
+        // check cards
+    });
 
     socket.on("receive_gamelist", function (list) {
         console.log("--> receive_gamelist");
@@ -101,6 +121,12 @@ $( document ).ready(function() {
             var card_elem = document.createElement("div");
             var card_img = document.createElement("img");
             var card_num = document.createElement("span");
+
+            var card_tip = document.createElement("span");
+            card_tip.className = 'tooltip';
+            card_tip.innerText = card.tip;
+            card_elem.appendChild(card_tip);
+
             card_elem.className = "card";
             card_img.src = "../img/" + card.image; 
             card_num.innerText = "x" +  card.quantity;
@@ -126,6 +152,12 @@ $( document ).ready(function() {
             var card_elem = document.createElement("div");
             var card_img = document.createElement("img");
             var card_num = document.createElement("span");
+
+            var card_tip = document.createElement("span");
+            card_tip.className = 'tooltip';
+            card_tip.innerText = card.tip;
+            card_elem.appendChild(card_tip);
+
             card_elem.className = "card";
             card_img.src = "../img/" + card.image; 
             card_num.innerText = "x" +  card.quantity;
@@ -158,6 +190,12 @@ $( document ).ready(function() {
                     var card_elem = document.createElement("div");
                     var card_img = document.createElement("img");
                     var card_num = document.createElement("span");
+
+                    var card_tip = document.createElement("span");
+                    card_tip.className = 'tooltip';
+                    card_tip.innerText = card.tip;
+                    card_elem.appendChild(card_tip);
+
                     card_elem.className = "card";
                     card_img.src = "../img/" + card.image; 
                     card_num.innerText = "x" +  card.quantity;

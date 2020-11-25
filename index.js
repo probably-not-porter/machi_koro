@@ -16,7 +16,7 @@ app.use(express.static("public"));
 
 // Game Setup
 class CardType { // set up all the information for a card
-    constructor(name, image, color, type, cost, activation, quantity){
+    constructor(name, image, color, type, cost, activation, quantity, tip){
         this.name = name;
         this.image = image;
         this.color = color;
@@ -24,6 +24,7 @@ class CardType { // set up all the information for a card
         this.cost = cost;
         this.activation = activation;
         this.quantity = quantity;
+        this.tip = tip;
     }
 }
 
@@ -45,28 +46,66 @@ class BoardState { // create a new board state
         this.state = 0; // 0 for waiting, 1 for in play
         this.name = name;
         this.market = [
-            new CardType("Wheat Field", "Wheat_Field.svg", "blue", "wheat", 1, [1], 6), 
-            new CardType("Ranch", "Ranch.svg", "blue", "cow", 1, [2], 6), 
-            new CardType("Forest", "Forest.svg", "blue", "gear", 3, [5], 6), 
-            new CardType("Mine", "Mine.svg", "blue", "gear", 6, [9], 6), 
-            new CardType("Apple Orchard", "Apple_Orchard.svg", "green","wheat", 3, [10], 6), 
-            new CardType("Bakery", "Bakery.svg", "green", "bread", 1, [2,3], 6), 
-            new CardType("Convenience Store", "Convenience_Store.svg", "green", "bread", 2,4, 6), 
-            new CardType("Cheese Factory", "Cheese_Factory.svg", "green", "factory", 5, 7, 6), 
-            new CardType("Furniture Factory", "Furniture_Factory.svg", "green", "factory", 3, 8, 6), 
-            new CardType("Fruit and Vegetable Market", "Fruit_and_Vegetable_Market.svg", "green", "fruit", 2, [11,12], 6), 
-            new CardType("Cafe", "Cafe.svg", "red", "cup", 2, 3, 6), 
-            new CardType("Family Restaurant", "Family_Restaurant.svg", "red", "cup", 3, [9,10], 6), 
-            new CardType("Stadium", "Stadium.svg", "purple", "tower", 7, 6, 4), 
-            new CardType("TV Station", "TV_Station.svg", "purple", "tower", 7, 6, 4), 
-            new CardType("Business Cetner", "Business_Center.svg", "purple", "tower", 8, 6, 4), 
-            new CardType("Train Station", "Train_Station.svg", "gold", "tower", 4, null, null), 
-            new CardType("Shopping Mall", "Shopping_Mall.svg", "gold", "tower", 10, null, null), 
-            new CardType("Amusement Park", "Amusement_Park.svg", "gold", "tower", 16, null, null), 
-            new CardType("Radio Tower", "Radio_Tower.svg", "gold", "tower", 22, null, null)
+            new CardType("Wheat Field", "Wheat_Field.svg", "blue", "wheat", 1, [1], 6,
+            "WHEAT FIELD\nActivation: 1\nCost: 1\nYou get 1 coin from the bank, on anyone's turn."), 
+
+            new CardType("Ranch", "Ranch.svg", "blue", "cow", 1, [2], 6,
+            "RANCH\nActivation: 2\n Cost: 1\nYou get 1 coin from the bank, on anyone's turn."), 
+
+            new CardType("Forest", "Forest.svg", "blue", "gear", 3, [5], 6,
+            "FOREST\nActivation: 5\n Cost: 3\nYou get 1 coin from the bank, on anyone's turn."), 
+
+            new CardType("Mine", "Mine.svg", "blue", "gear", 6, [9], 6,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Apple Orchard", "Apple_Orchard.svg", "green","wheat", 3, [10], 6,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Bakery", "Bakery.svg", "green", "bread", 1, [2,3], 6,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Convenience Store", "Convenience_Store.svg", "green", "bread", 2,4, 6,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Cheese Factory", "Cheese_Factory.svg", "green", "factory", 5, 7, 6,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Furniture Factory", "Furniture_Factory.svg", "green", "factory", 3, 8, 6,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Fruit and Vegetable Market", "Fruit_and_Vegetable_Market.svg", "green", "fruit", 2, [11,12], 6,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Cafe", "Cafe.svg", "red", "cup", 2, 3, 6,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Family Restaurant", "Family_Restaurant.svg", "red", "cup", 3, [9,10], 6,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Stadium", "Stadium.svg", "purple", "tower", 7, 6, 4,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("TV Station", "TV_Station.svg", "purple", "tower", 7, 6, 4,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Business Center", "Business_Center.svg", "purple", "tower", 8, 6, 4,
+            "Activation: 1\n Cost: 1\n"), 
+
+            new CardType("Train Station", "Train_Station.svg", "gold", "tower", 4, null, null,
+            ""), 
+
+            new CardType("Shopping Mall", "Shopping_Mall.svg", "gold", "tower", 10, null, null,
+            ""), 
+
+            new CardType("Amusement Park", "Amusement_Park.svg", "gold", "tower", 16, null, null,
+            ""), 
+            
+            new CardType("Radio Tower", "Radio_Tower.svg", "gold", "tower", 22, null, null,
+            "")
         ];
         this.players = [];
         this.turn = 0;
+        this.phase = "rolling"; // phases are rolling and buying
         this.timer = 300;
     }
 }
