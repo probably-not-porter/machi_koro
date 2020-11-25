@@ -2,8 +2,11 @@ $( document ).ready(function() {
     const socket = io();
     let self_id = makeid(12);
     let self_name = prompt("Choose a Display Name");
+    
     document.getElementById('player_name').innerText = self_name;
+    
     let in_game = false;
+    let my_game_state = null;
     
 
     function start_current(id){
@@ -34,7 +37,13 @@ $( document ).ready(function() {
         let roll = 1 + Math.floor(Math.random()*6);
         document.getElementById("roll_num").innerText = roll;
         // check cards
+
+        //socket.emit("dice_roll", roll, self_id, my_game_id);
+        take_turn_pt2(roll);
     });
+
+
+
     document.getElementById("roll2").addEventListener("click", function () {
         let roll = 1 + Math.floor(Math.random()*6);
         let roll2 = 1 + Math.floor(Math.random()*6);
@@ -58,12 +67,14 @@ $( document ).ready(function() {
                 if (current_game.state == 1){ // GAME START, SWITCH SCREEN
                     console.log('game is starting');
                     in_game = true;
+                    my_game_state = current_game;
+                    console.log(my_game_state);
                     document.getElementById("game").style.zIndex = 1;
                     document.getElementById("waiting_lobby").style.zIndex = 0;
                     let current_turn_player = current_game.players[current_game.turn];
                     if (current_turn_player.id == self_id) {
                         document.getElementById("current_turn").innerText = "It's your turn!";
-                        take_turn_pt1();
+                        take_turn_pt1()
                     }else{
                         document.getElementById("current_turn").innerText = current_turn_player.name + "'s turn";
                     }
@@ -118,6 +129,13 @@ $( document ).ready(function() {
 
     socket.on("update_boardstate", function (state) { // display new boardstate
         console.log("--> update boardstate")
+        console.info(state);
+        // FEED
+        document.getElementById("feed").innerText = "";
+        for (x in state.feed){
+            document.getElementById("feed").innerText += state.feed[x] + "\n";
+        }
+        
         // MARKET
         console.log('----> display market');
         let market_cards = state.market;
@@ -150,6 +168,7 @@ $( document ).ready(function() {
                 self_player = state.players[x]
             }
         }
+        document.getElementById("field").innerHTML = "";
         for (let x = 0; x < self_player.cards.length; x++){
             let card = self_player.cards[x];
             // stats
@@ -171,7 +190,7 @@ $( document ).ready(function() {
             if (card.quantity != null){ card_elem.appendChild(card_num); }
             document.getElementById("field").appendChild(card_elem);
         }
-        document.getElementById("coins-val").innerText = stats["coins"];
+        document.getElementById("coins-val").innerText = self_player.coins;
         document.getElementById("bread-val").innerText = stats["bread"];
         document.getElementById("cup-val").innerText = stats["cup"];
         document.getElementById("fruit-val").innerText = stats["fruit"];
@@ -184,7 +203,7 @@ $( document ).ready(function() {
 
         // OPPONENTS
         console.log('----> display opponent cards');
-
+        document.getElementById("opp").innerHTML = "";
         for (x in state.players){
             if (state.players[x] != self_player){
                 var opp_elem = document.createElement("div");
@@ -226,14 +245,13 @@ $( document ).ready(function() {
         return result;
     }
 
+    // get all the action elements
+    let waiting_elem = document.getElementById("waiting");
+    let rolling_elem = document.getElementById("rolling");
+    let buying_elem = document.getElementById("buying");
+    let ending_elem = document.getElementById("ending");
+
     function take_turn_pt1(){ // you are currently taking your turn
-
-        // get all the action elements
-        let waiting_elem = document.getElementById("waiting");
-        let rolling_elem = document.getElementById("rolling");
-        let buying_elem = document.getElementById("buying");
-        let ending_elem = document.getElementById("ending");
-
         // hide waiting action because its your turn
         waiting_elem.style.display = "none";
 
@@ -245,12 +263,35 @@ $( document ).ready(function() {
 
         // WAITING FOR DICE ROLL
     }
-    function take_turn_pt2(){
-        // DICE ROLL AS INPUT
+    function take_turn_pt2(roll){
+        
+        let self_player = null;
+        for (x in my_game_state.players){
+            if (my_game_state.players[x].id == self_id){
+                self_player = my_game_state.players[x]
+            }
+        }
+        my_game_state.feed.push(self_player.name + " rolled a " + roll + ".");
 
-        // update board
+        // activate red
 
-        // activate blue
+        // activate blue 
+        console.log(my_game_state);
+        for (y in my_game_state.players){
+            let this_player = my_game_state.players[y];
+            for (x in this_player.cards){
+                if (this_player.cards[x].color == "blue"){
+                    let this_card = self_player.cards[x];
+                    if (this_card.activation == roll){
+                        console.log('activate ' + this_card.name);
+                        this_player.coins += this_card.value * this_card.quantity;
+                        my_game_state.feed.push(this_player.name + "'s " + this_card.name + "(s) is activated.");
+                    }
+                }
+            }
+            my_game_state.players[y] = this_player;
+        }
+        console.log(my_game_state);
 
         // activate green
 
@@ -259,8 +300,8 @@ $( document ).ready(function() {
         // update board state
 
         // BUY PHASE
-
-        // update board state
+        console.info(my_game_state);
+        socket.emit("change_boardstate", my_game_state);
     }
 });
 

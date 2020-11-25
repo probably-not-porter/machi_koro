@@ -164,24 +164,24 @@ h2{
 
 #rolling{
     width: 20vw;
-    height: 20vw;
+    height: 10vw;
     background-color: red;
     display: none;
 }
 #waiting{
     width: 20vw;
-    height: 20vw;
+    height: 10vw;
     background-color: blue;
 }
 #buying{
     width: 20vw;
-    height: 20vw;
+    height: 10vw;
     background-color: green;
     display: none;
 }
 #ending{
     width: 20vw;
-    height: 20vw;
+    height: 10vw;
     background-color: purple;
     display: none;
 }
@@ -189,7 +189,13 @@ h2{
 #actions{
     background: white;
     width: 20vw;
-    height: 20vw;
+    height: 10vw;
     font-size: 30px;
     text-align: center;
+}
+#feed{
+    overflow: scroll;
+    width: 20vw;
+    height: 20vw;
+    font-size: 12px;
 }
