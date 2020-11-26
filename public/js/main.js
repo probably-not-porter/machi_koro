@@ -133,7 +133,11 @@ $( document ).ready(function() {
         for (x in state.players){
             if (state.turn == x){
                 if (self_id == state.players[x].id && in_turn == false){
+                    document.getElementById("current_turn").innerText = "It's your turn!";
                     take_turn_pt1();
+                }
+                else{
+                    document.getElementById("current_turn").innerText = "It's " + state.players[x].name + "'s turn.";
                 }
             }
         }
