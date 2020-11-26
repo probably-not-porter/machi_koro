@@ -1,3 +1,12 @@
+:root {
+    --color1: #B0c0b3;
+    --color2: #98bd9b;
+    --color3: #7fa489;
+    --color4: #618767;
+    --color5: #58755b;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans&family=Roboto&display=swap');
+
 html, body{
     margin: 0;
     padding: 0;
@@ -6,6 +15,9 @@ html, body{
     height: 100%;
     font-size: 0;
     overflow: hidden;
+    color: #222;
+    font-family: 'Noto Sans', sans-serif;
+
 }
 #game{
     width: 100%;
@@ -18,7 +30,7 @@ html, body{
     height: 100%;
     position: absolute;
     z-index: 1;
-    background: rgb(190, 168, 190);
+    background: var(--color1);
     font-size: 15px;
     padding-left: 20px;
     padding-top: 10px;
@@ -28,7 +40,7 @@ html, body{
     height: 100%;
     position: absolute;
     z-index: 0;
-    background: rgb(116, 116, 168);
+    background: var(--color1);
     font-size: 15px;
     padding-left: 20px;
     padding-top: 10px;
@@ -127,7 +139,7 @@ html, body{
     font-size: 12px;
 }
 h1{
-    
+    background: var(--color2);
 }
 h2{
     text-align: center;
@@ -135,11 +147,11 @@ h2{
 #active_games_panel{
     border: 1px solid black;
     width: 400px;
-    background: rgba(255,255,255,0.2);
+    background: var(--color2);
     margin-bottom: 100px;
 }
 #active_games li{
-    background: rgba(255,255,255,0.4);
+    background: var(--color3);;
     list-style-type: none;
     border: 1px solid black;
     margin-left: -40px;
@@ -147,7 +159,7 @@ h2{
 }
 
 .button {
-    background-color: rgb(139, 86, 139);
+    background-color: var(--color5);
     border: none;
     color: white;
     padding: 15px 32px;
@@ -159,7 +171,8 @@ h2{
     cursor: pointer;
 }
 .button:disabled{
-    background-color: gray;
+    color: gray;
+    background-color: var(--color1);
 }
 
 #rolling{

@@ -1,8 +1,17 @@
-let self_id = null;
 $( document ).ready(function() {
     const socket = io();
-    self_id = makeid(12);
-    let self_name = prompt("Choose a Display Name");
+
+    var self_id = localStorage['self_id'] || null; // cache id
+    if (self_id == null){
+        self_id = makeid(12);
+        localStorage['self_id'] = self_id;
+    }
+
+    var self_name = localStorage['self_name'] || null; // cache name
+    if (self_name == null){
+        self_name = prompt("Choose a Display Name");
+        localStorage['self_name'] = self_name;
+    }
     
     document.getElementById('player_name').innerText = self_name;
     
@@ -78,7 +87,7 @@ $( document ).ready(function() {
                     document.getElementById("game").style.zIndex = 1;
                     document.getElementById("waiting_lobby").style.zIndex = 0;
                 }
-                document.getElementById("game_name").innerText = current_game.name;
+                document.getElementById("game_name").innerText = "Game: " + current_game.name + "Lobby";
                 document.getElementById("game_players").innerText = current_game.players.length + "/4 (waiting)";
                 document.getElementById("game_players_list").innerHTML = "";
                 for (x in current_game.players){
