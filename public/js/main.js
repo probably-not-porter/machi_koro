@@ -1,16 +1,18 @@
+let self_id = null;
 $( document ).ready(function() {
     const socket = io();
-    let self_id = makeid(12);
+    self_id = makeid(12);
     let self_name = prompt("Choose a Display Name");
     
     document.getElementById('player_name').innerText = self_name;
     
     let in_game = false;
     let my_game_state = null;
+    let in_turn = false;
+    let my_game_id = null;
     
 
     function start_current(id){
-        console.log('--> start_current ' + id);
         socket.emit("start_game", id);
     }
 
@@ -21,7 +23,6 @@ $( document ).ready(function() {
 
     // create new game (lobby)
     document.getElementById("new_game").addEventListener("click", function () {
-        console.log("--> create game")
         var name = prompt("Enter a name for your game");
         if (name){
             socket.emit("create_game", [name, makeid(10), self_id, self_name]);
@@ -41,9 +42,6 @@ $( document ).ready(function() {
         //socket.emit("dice_roll", roll, self_id, my_game_id);
         take_turn_pt2(roll);
     });
-
-
-
     document.getElementById("roll2").addEventListener("click", function () {
         let roll = 1 + Math.floor(Math.random()*6);
         let roll2 = 1 + Math.floor(Math.random()*6);
@@ -51,8 +49,18 @@ $( document ).ready(function() {
         // check cards
     });
 
+    // end turn
+    document.getElementById("end_turn").addEventListener("click", function () {
+        end_turn();
+    });
+    document.getElementById("end_turn_buy").addEventListener("click", function () {
+        var check = confirm("Are you sure you want to end your turn without buying anything?");
+        if (check){
+            end_turn();
+        }
+    });
+
     socket.on("receive_gamelist", function (list) {
-        console.log("--> receive_gamelist");
         if (in_game == false){
             // update waiting screen
             let current_game = null;
@@ -65,19 +73,10 @@ $( document ).ready(function() {
             }
             if (current_game){
                 if (current_game.state == 1){ // GAME START, SWITCH SCREEN
-                    console.log('game is starting');
                     in_game = true;
                     my_game_state = current_game;
-                    console.log(my_game_state);
                     document.getElementById("game").style.zIndex = 1;
                     document.getElementById("waiting_lobby").style.zIndex = 0;
-                    let current_turn_player = current_game.players[current_game.turn];
-                    if (current_turn_player.id == self_id) {
-                        document.getElementById("current_turn").innerText = "It's your turn!";
-                        take_turn_pt1()
-                    }else{
-                        document.getElementById("current_turn").innerText = current_turn_player.name + "'s turn";
-                    }
                 }
                 document.getElementById("game_name").innerText = current_game.name;
                 document.getElementById("game_players").innerText = current_game.players.length + "/4 (waiting)";
@@ -110,7 +109,7 @@ $( document ).ready(function() {
 
                     // JOIN GAME
                     li.addEventListener("click", function () {
-                        console.log(li.className)
+                        my_game_id = li.className;
                         socket.emit("join_game", [li.className, self_id, self_name]);
                         document.getElementById("lobby").style.zIndex = 0;
                         document.getElementById("waiting_lobby").style.zIndex = 1;
@@ -128,8 +127,17 @@ $( document ).ready(function() {
     });
 
     socket.on("update_boardstate", function (state) { // display new boardstate
-        console.log("--> update boardstate")
-        console.info(state);
+        console.log(state);
+        my_game_state = state;
+
+        for (x in state.players){
+            if (state.turn == x){
+                if (self_id == state.players[x].id && in_turn == false){
+                    take_turn_pt1();
+                }
+            }
+        }
+
         // FEED
         document.getElementById("feed").innerText = "";
         for (x in state.feed){
@@ -137,7 +145,6 @@ $( document ).ready(function() {
         }
         
         // MARKET
-        console.log('----> display market');
         let market_cards = state.market;
         document.getElementById("decks").innerHTML = "";
         for (let x = 0; x < market_cards.length; x++){
@@ -160,7 +167,6 @@ $( document ).ready(function() {
         }
 
         // SELF
-        console.log('----> display player cards');
         let self_player = null;
         let stats = {"coins": 0, "bread": 0, "cup": 0, "fruit": 0, "tower": 0, "cow": 0, "factory": 0, "gear": 0, "wheat": 0}
         for (x in state.players){
@@ -202,7 +208,6 @@ $( document ).ready(function() {
 
 
         // OPPONENTS
-        console.log('----> display opponent cards');
         document.getElementById("opp").innerHTML = "";
         for (x in state.players){
             if (state.players[x] != self_player){
@@ -241,7 +246,6 @@ $( document ).ready(function() {
         for ( var i = 0; i < n; i++ ) {
           result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
-        console.log("created id "+ result);
         return result;
     }
 
@@ -252,6 +256,7 @@ $( document ).ready(function() {
     let ending_elem = document.getElementById("ending");
 
     function take_turn_pt1(){ // you are currently taking your turn
+        in_turn = true;
         // hide waiting action because its your turn
         waiting_elem.style.display = "none";
 
@@ -264,36 +269,73 @@ $( document ).ready(function() {
         // WAITING FOR DICE ROLL
     }
     function take_turn_pt2(roll){
-        
         let self_player = null;
+        let s_mall = 0;
         for (x in my_game_state.players){
             if (my_game_state.players[x].id == self_id){
                 self_player = my_game_state.players[x]
             }
         }
+
+        // check if player has shopping mall
+        for (x in self_player.cards){
+            if (self_player.cards[x].name == "Shopping Mall"){
+                s_mall = 1;
+            }
+        }
+
+
         my_game_state.feed.push(self_player.name + " rolled a " + roll + ".");
 
-        // activate red
+        // activate red ONLY FOR CURRENT PLAYER
 
-        // activate blue 
-        console.log(my_game_state);
+        // activate blue CHECK FOR EVERYONE
         for (y in my_game_state.players){
             let this_player = my_game_state.players[y];
             for (x in this_player.cards){
                 if (this_player.cards[x].color == "blue"){
-                    let this_card = self_player.cards[x];
-                    if (this_card.activation == roll){
-                        console.log('activate ' + this_card.name);
+                    let this_card = this_player.cards[x];
+                    if (this_card.activation.includes(roll)){
                         this_player.coins += this_card.value * this_card.quantity;
                         my_game_state.feed.push(this_player.name + "'s " + this_card.name + "(s) is activated.");
+
+                        if (s_mall && (this_card.type == "bread" || this_card.type == "cup")) {this_player.coins += 1} // mod for shopping mall
                     }
                 }
             }
-            my_game_state.players[y] = this_player;
+            my_game_state.players[y] = this_player; // update player in state
         }
-        console.log(my_game_state);
 
-        // activate green
+        // activate green ONLY FOR CURRENT PLAYER
+        for (y in my_game_state.players){
+            if (my_game_state.players[y].id == self_id){ // has to be your turn
+                let this_player = my_game_state.players[y];
+                for (x in this_player.cards){
+                    if (this_player.cards[x].color == "green"){
+                        let this_card = this_player.cards[x];
+                        if (this_card.activation.includes(roll)){
+                            my_game_state.feed.push(this_player.name + "'s " + this_card.name + "(s) is activated.");
+                            // exceptions
+                            if (this_card.name == "Cheese Factory"){
+                                this_player.coins += (3 * parseInt(document.getElementById("cow-val").innerText)) * this_card.quantity; // 3 per cow
+                            }
+                            else if (this_card.name == "Furniture Factory"){ 
+                                this_player.coins += (3 * parseInt(document.getElementById("gear-val").innerText)) * this_card.quantity; // 3 per gear
+                            }
+                            else if (this_card.name == "Fruit and Vegetable Market"){
+                                this_player.coins += (3 * parseInt(document.getElementById("wheat-val").innerText)) * this_card.quantity; // 2 per wheat
+                            }
+                            else{
+                                this_player.coins += this_card.value * this_card.quantity;
+                            }
+
+                            if (s_mall && (this_card.type == "bread" || this_card.type == "cup")) {this_player.coins += 1} // mod for shopping mall
+                        }
+                    }
+                }
+                my_game_state.players[y] = this_player; // update player in state
+            }
+        }
 
         // activate purple
 
@@ -302,6 +344,23 @@ $( document ).ready(function() {
         // BUY PHASE
         console.info(my_game_state);
         socket.emit("change_boardstate", my_game_state);
+        take_turn_pt3();
+    }
+    function take_turn_pt3(){
+        rolling_elem.style.display = "none"; // hide prev
+        buying_elem.style.display = "inline-block"; // show action
+
+        // enable all card buttons
+    }
+    function end_turn(){
+        in_turn = false;
+
+        my_game_state.turn = (my_game_state.turn + 1) % my_game_state.players.length;
+
+        socket.emit("change_boardstate", my_game_state);
+        waiting_elem.style.display = "inline-block"; // back to waiting
+        buying_elem.style.display = "none"; // hide action
+        
     }
 });
 

@@ -37,7 +37,7 @@ class Player { // create a new player
             new CardType("Wheat Field", "Wheat_Field.svg", "blue", "wheat", 1, 1, [1], 1,
             "WHEAT FIELD\nActivation: 1\nCost: 1\nGet 1 coin from the bank, on anyone's turn."), 
 
-            new CardType("Bakery", "Bakery.svg", "green", "bread", null, 1, [2,3], 1,
+            new CardType("Bakery", "Bakery.svg", "green", "bread", 1, 1, [2,3], 1,
             "BAKERY\nActivation: 2-3\n Cost: 1\nGet 1 coin from bank, on your turn only")
         ];
         this.coins = 0;
@@ -63,13 +63,13 @@ class BoardState { // create a new board state
             new CardType("Mine", "Mine.svg", "blue", "gear", 5, 6, [9], 6,
             "MINE\nActivation: 9\n Cost: 6\nGet 5 coins from the bank, on anyone’s turn."), 
 
-            new CardType("Apple Orchard", "Apple_Orchard.svg", "green","wheat", 3, 3, [10], 6,
+            new CardType("Apple Orchard", "Apple_Orchard.svg", "blue","wheat", 3, 3, [10], 6,
             "APPLE ORCHARD\nActivation: 10\n Cost: 3\nGet 3 coins from the bank, on anyone’s turn."), 
 
-            new CardType("Bakery", "Bakery.svg", "green", "bread", null, 1, [2,3], 6,
+            new CardType("Bakery", "Bakery.svg", "green", "bread", 1, 1, [2,3], 6,
             "BAKERY\nActivation: 2-3\n Cost: 1\nGet 1 coin from bank, on your turn only"), 
 
-            new CardType("Convenience Store", "Convenience_Store.svg", "green", "bread", null, 2, 4, 6,
+            new CardType("Convenience Store", "Convenience_Store.svg", "green", "bread", 3, 2, 4, 6,
             "CONVENIENCE STORE\nActivation: 4\n Cost: 2\nGet 3 coins from the bank, on your turn only."), 
 
             new CardType("Cheese Factory", "Cheese_Factory.svg", "green", "factory", null, 5, 7, 6,
@@ -110,7 +110,6 @@ class BoardState { // create a new board state
         ];
         this.players = [];
         this.turn = 0;
-        this.phase = "rolling"; // phases are rolling and buying
         this.timer = 300;
     }
 }
@@ -127,6 +126,7 @@ io.on("connection", function (socket) {
     socket.on("join_game", function(data) {
         console.log("--> Player '" + data[2] + "' has joined game " + data[0]);
         let game = null;
+        socket.join(data[0])
         let self_player = new Player(data[2], data[1]);
         for (x in _game_list){
             if (_game_list[x].id == data[0]){
@@ -175,7 +175,6 @@ io.on("connection", function (socket) {
     });
     socket.on("change_boardstate", function(state) {
         console.log("--> Change to boardstate");
-        console.log(state);
         let game = null;
         for (x in _game_list){
             if (_game_list[x].id == state.id){
@@ -183,7 +182,7 @@ io.on("connection", function (socket) {
                 game = _game_list[x];
             }
         }
-        io.emit("update_boardstate", game);
+        io.sockets.in(state.id).emit("update_boardstate", game);
     });
 
     socket.on("request_boardstate", function(id) { // client is requesting boardstate
@@ -194,6 +193,6 @@ io.on("connection", function (socket) {
                 game = _game_list[x]
             }
         }
-        io.emit("update_boardstate", game); // send boardstate to client
+        io.sockets.in(id).emit("update_boardstate", game); // send boardstate to client
     });
 });

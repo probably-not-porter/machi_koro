@@ -120,7 +120,7 @@ html, body{
 }
 .card:hover img{
     border: 3px solid red;
-    box-shadow: inset 0px 0px 0px 10px red;
+    box-shadow: inset 0px 0px 0px 1px red;
 }
 
 #stats{
