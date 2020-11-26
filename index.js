@@ -158,7 +158,7 @@ io.on("connection", function (socket) {
                 game = _game_list[x]
             }
         }
-        io.emit("update_boardstate", game); // send boardstate to client
+        io.to(id).emit("update_boardstate", game); // send boardstate to client
     });
 
     socket.on("create_game", function(data) {
@@ -182,7 +182,7 @@ io.on("connection", function (socket) {
                 game = _game_list[x];
             }
         }
-        io.sockets.in(state.id).emit("update_boardstate", game);
+        io.to(state.id).emit("update_boardstate", game);
     });
 
     socket.on("request_boardstate", function(id) { // client is requesting boardstate
@@ -193,6 +193,6 @@ io.on("connection", function (socket) {
                 game = _game_list[x]
             }
         }
-        io.sockets.in(id).emit("update_boardstate", game); // send boardstate to client
+        io.to(id).emit("update_boardstate", game); // send boardstate to client
     });
 });
