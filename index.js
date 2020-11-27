@@ -70,43 +70,43 @@ class BoardState { // create a new board state
             new CardType("Bakery", "Bakery.svg", "green", "bread", 1, 1, [2,3], 6,
             "BAKERY\nActivation: 2-3\n Cost: 1\nGet 1 coin from bank, on your turn only", 6), 
 
-            new CardType("Convenience Store", "Convenience_Store.svg", "green", "bread", 3, 2, 4, 6,
+            new CardType("Convenience Store", "Convenience_Store.svg", "green", "bread", 3, 2, [4], 6,
             "CONVENIENCE STORE\nActivation: 4\n Cost: 2\nGet 3 coins from the bank, on your turn only.", 7), 
 
-            new CardType("Cheese Factory", "Cheese_Factory.svg", "green", "factory", null, 5, 7, 6,
+            new CardType("Cheese Factory", "Cheese_Factory.svg", "green", "factory", null, 5, [7], 6,
             "CHEESE FACTORY\nActivation: 7\n Cost: 5\nGet 3 coins from the bank for every [Cow] establishment you own, on your turn only.", 8), 
 
-            new CardType("Furniture Factory", "Furniture_Factory.svg", "green", "factory", null, 3, 8, 6,
+            new CardType("Furniture Factory", "Furniture_Factory.svg", "green", "factory", null, 3, [8], 6,
             "FURNITURE FACTORY\nActivation: 8\n Cost: 3\nGet 3 coins from the bank for every [Gear] establishment you own, on your turn only.", 9), 
 
             new CardType("Fruit and Vegetable Market", "Fruit_and_Vegetable_Market.svg", "green", "fruit", null, 2, [11,12], 6,
             "FRUIT AND VEGETABLE MARKET\nActivation: 11-12\n Cost: 2\nGet 2 coins from the bank for every [Wheat] establishment you own, on your turn only.", 10), 
 
-            new CardType("Cafe", "Cafe.svg", "red", "cup", null, 2, 3, 6,
+            new CardType("Cafe", "Cafe.svg", "red", "cup", 2, 2, [3], 6,
             "CAFE\nActivation: 3\n Cost: 2\nGet 1 coin from the player who rolled the dice.", 11), 
 
-            new CardType("Family Restaurant", "Family_Restaurant.svg", "red", "cup", null, 3, [9,10], 6,
+            new CardType("Family Restaurant", "Family_Restaurant.svg", "red", "cup", 2, 3, [9,10], 6,
             "FAMILY RESTAURANT\nActivation: 9-10\n Cost: 3\nGet 2 coins from the player who rolled the dice.", 12), 
 
-            new CardType("Stadium", "Stadium.svg", "purple", "tower", null, 7, 6, 4,
+            new CardType("Stadium", "Stadium.svg", "purple", "tower", null, 7, [6], 4,
             "STADIUM\nActivation: 6\n Cost: 6\nGet 2 coins from all players, on your turn only.", 13), 
 
-            new CardType("TV Station", "TV_Station.svg", "purple", "tower", null, 7, 6, 4,
+            new CardType("TV Station", "TV_Station.svg", "purple", "tower", null, 7, [6], 4,
             "TV STATION\nActivation: 6\n Cost: 7\nTake 5 coins from any one player, on your turn only.", 14), 
 
-            new CardType("Business Center", "Business_Center.svg", "purple", "tower", null, 8, 6, 4,
+            new CardType("Business Center", "Business_Center.svg", "purple", "tower", null, 8, [6], 4,
             "BUSINESS CENTER\nActivation: 6\n Cost: 8\nTrade one non-[tower] establishment with another player, on your turn only", 15), 
 
-            new CardType("Train Station", "Train_Station.svg", "gold", "tower", null, 4, null, null,
+            new CardType("Train Station", "Train_Station.svg", "gold", "tower", null, 4, [], null,
             "TRAIN STATION\nCost: 4\nYou may roll 1 or 2 dice.", 16), 
 
-            new CardType("Shopping Mall", "Shopping_Mall.svg", "gold", "tower", null, 10, null, null,
+            new CardType("Shopping Mall", "Shopping_Mall.svg", "gold", "tower", null, 10, [], null,
             "SHOPPING MALL\nCost: 10\nEach of your [cup] and [bread] establishments earn +1 coin.", 17), 
 
-            new CardType("Amusement Park", "Amusement_Park.svg", "gold", "tower", null, 16, null, null,
+            new CardType("Amusement Park", "Amusement_Park.svg", "gold", "tower", null, 16, [], null,
             "AMUSEMENT PARK\nCost: 16\nIf you roll doubles, take another turn after this one.", 18), 
             
-            new CardType("Radio Tower", "Radio_Tower.svg", "gold", "tower", null, 22, null, null,
+            new CardType("Radio Tower", "Radio_Tower.svg", "gold", "tower", null, 22, [], null,
             "RADIO TOWER\nCost: 22\nOnce every turn, you can choose to re-roll your dice.", 19)
         ];
         this.players = [];

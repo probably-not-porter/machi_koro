@@ -305,8 +305,41 @@ $( document ).ready(function() {
 
         add_feed_msg(self_player.name + " rolled a " + roll + ".");
 
-        // activate red ONLY FOR CURRENT PLAYER
+        // activate red ONLY FOR OTHER PLAYERS
+        for (y in my_game_state.players){
+            if (my_game_state.players[y].id != self_id){ // has to be your turn
+                let this_player = my_game_state.players[y];
+                for (x in this_player.cards){
+                    if (this_player.cards[x].color == "red"){
+                        let this_card = this_player.cards[x];
+                        if (this_card.activation.includes(roll)){
+                            add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated.");
+                            let take_value = this_card.value
+                            if (s_mall && (this_card.type == "bread" || this_card.type == "cup")) {take_value += 1} // mod for shopping mall
+                            // y = current player, so y - 1 % player_num is the target, since it moves counter-clockwise
 
+                            for (j in my_game_state.players){
+                                if (my_game_state.players[j].id == self_id){
+                                    let affected_player = my_game_state.players[j];
+
+                                    if (affected_player.coins >= take_value){
+                                        affected_player.coins -= take_value;
+                                        this_player.coins += take_value;
+                                    }
+                                    else{
+                                        this_player.coins += affected_player.coins;
+                                        affected_player.coins = 0;
+                                    }
+
+                                    my_game_state.players[j] = affected_player;
+                                }
+                            }
+                        }
+                    }
+                }
+                my_game_state.players[y] = this_player; // update player in state
+            }
+        }
         // activate blue CHECK FOR EVERYONE
         for (y in my_game_state.players){
             let this_player = my_game_state.players[y];
