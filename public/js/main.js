@@ -196,7 +196,7 @@ $( document ).ready(function() {
         for (let x = 0; x < self_player.cards.length; x++){
             let card = self_player.cards[x];
             // stats
-            stats[card.type] += 1;
+            stats[card.type] += (1 * card.quantity);
 
             var card_elem = document.createElement("div");
             var card_img = document.createElement("img");
@@ -418,13 +418,13 @@ $( document ).ready(function() {
                 if (target_stack){ // buying a dupe
                     this_player.cards[target_stack].quantity += 1;
                     this_player.coins -= card.cost;
-                    add_feed_msg(this_player.name + "buys another " + card.name);
+                    add_feed_msg(this_player.name + " buys another " + card.name);
                 }else{ // buying a new card
                     let new_card = card;
                     new_card.quantity = 1;
                     this_player.cards.push(new_card);
                     this_player.coins -= card.cost;
-                    add_feed_msg(this_player.name + "buys a " + card.name);
+                    add_feed_msg(this_player.name + "   buys a " + card.name);
                 }
 
             }
