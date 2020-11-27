@@ -144,6 +144,7 @@ $( document ).ready(function() {
             if (state.turn == x){
                 if (self_id == state.players[x].id && in_turn == false){
                     document.getElementById("current_turn").innerText = "It's your turn!";
+                    add_feed_msg(state.players[x].name + "'s turn!");
                     take_turn_pt1();
                 }
                 else if (self_id != state.players[x].id && in_turn == false){
@@ -302,7 +303,7 @@ $( document ).ready(function() {
         }
 
 
-        my_game_state.feed.push(self_player.name + " rolled a " + roll + ".");
+        add_feed_msg(self_player.name + " rolled a " + roll + ".");
 
         // activate red ONLY FOR CURRENT PLAYER
 
@@ -314,7 +315,7 @@ $( document ).ready(function() {
                     let this_card = this_player.cards[x];
                     if (this_card.activation.includes(roll)){
                         this_player.coins += this_card.value * this_card.quantity;
-                        my_game_state.feed.push(this_player.name + "'s " + this_card.name + "(s) is activated.");
+                        add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated.");
 
                         if (s_mall && (this_card.type == "bread" || this_card.type == "cup")) {this_player.coins += 1} // mod for shopping mall
                     }
@@ -331,7 +332,7 @@ $( document ).ready(function() {
                     if (this_player.cards[x].color == "green"){
                         let this_card = this_player.cards[x];
                         if (this_card.activation.includes(roll)){
-                            my_game_state.feed.push(this_player.name + "'s " + this_card.name + "(s) is activated.");
+                            add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated.");
                             // exceptions
                             if (this_card.name == "Cheese Factory"){
                                 this_player.coins += (3 * parseInt(document.getElementById("cow-val").innerText)) * this_card.quantity; // 3 per cow
@@ -363,9 +364,6 @@ $( document ).ready(function() {
     function take_turn_pt3(){
         rolling_elem.style.display = "none"; // hide prev
         buying_elem.style.display = "inline-block"; // show action
-
-        // enable all card buttons
-
         // BUY PHASE
         buying = true;
     }
@@ -420,15 +418,20 @@ $( document ).ready(function() {
                 if (target_stack){ // buying a dupe
                     this_player.cards[target_stack].quantity += 1;
                     this_player.coins -= card.cost;
-                }else{
+                    add_feed_msg(this_player.name + "buys another " + card.name);
+                }else{ // buying a new card
                     let new_card = card;
                     new_card.quantity = 1;
                     this_player.cards.push(new_card);
                     this_player.coins -= card.cost;
+                    add_feed_msg(this_player.name + "buys a " + card.name);
                 }
 
             }
         }
+    }
+    function add_feed_msg(msg){
+        my_game_state.feed.push(msg);
     }
 });
 
