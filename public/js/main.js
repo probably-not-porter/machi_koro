@@ -20,6 +20,12 @@ $( document ).ready(function() {
     let in_turn = false;
     let my_game_id = null;
     let buying = false;
+
+
+    // WINCONS
+    let s_mall = 0;
+    let a_park = 0;
+    let r_tower = 0;
     
 
     function start_current(id){
@@ -137,9 +143,13 @@ $( document ).ready(function() {
     });
 
     socket.on("update_boardstate", function (state) { // display new boardstate
-        console.log(state);
         my_game_state = state;
+        // CHECK FOR WIN
+        if (s_mall + r_tower + a_park == 3){
+            alert("You Won!");
+        }
 
+        // CHECK FOR MY TURN
         for (x in state.players){
             if (state.turn == x){
                 if (self_id == state.players[x].id && in_turn == false){
@@ -196,6 +206,10 @@ $( document ).ready(function() {
         document.getElementById("field").innerHTML = "";
         for (let x = 0; x < self_player.cards.length; x++){
             let card = self_player.cards[x];
+
+            if (card.name == "Shopping Mall"){s_mall = 1;}
+            if (card.name == "Amusement Park"){a_park = 1;}
+            if (card.name == "Radio Tower"){r_tower = 1;}
             // stats
             stats[card.type] += (1 * card.quantity);
 
@@ -289,17 +303,10 @@ $( document ).ready(function() {
     }
     function take_turn_pt2(roll){
         let self_player = null;
-        let s_mall = 0;
+        
         for (x in my_game_state.players){
             if (my_game_state.players[x].id == self_id){
                 self_player = my_game_state.players[x]
-            }
-        }
-
-        // check if player has shopping mall
-        for (x in self_player.cards){
-            if (self_player.cards[x].name == "Shopping Mall"){
-                s_mall = 1;
             }
         }
 
