@@ -158,6 +158,7 @@ $( document ).ready(function() {
         for (x in state.feed){
             document.getElementById("feed").innerText += state.feed[x] + "\n";
         }
+        updateScroll();
         
         // MARKET
         let market_cards = state.market;
@@ -465,6 +466,11 @@ $( document ).ready(function() {
     }
     function add_feed_msg(msg){
         my_game_state.feed.push(msg);
+    }
+
+    function updateScroll(){
+        var element = document.getElementById("feed");
+        element.scrollTop = element.scrollHeight;
     }
 });
 
