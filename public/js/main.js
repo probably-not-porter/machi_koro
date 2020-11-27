@@ -19,6 +19,7 @@ $( document ).ready(function() {
     let my_game_state = null;
     let in_turn = false;
     let my_game_id = null;
+    let buying = false;
     
 
     function start_current(id){
@@ -145,7 +146,7 @@ $( document ).ready(function() {
                     document.getElementById("current_turn").innerText = "It's your turn!";
                     take_turn_pt1();
                 }
-                else{
+                else if (self_id != state.players[x].id && in_turn == false){
                     document.getElementById("current_turn").innerText = "It's " + state.players[x].name + "'s turn.";
                 }
             }
@@ -177,6 +178,9 @@ $( document ).ready(function() {
             card_elem.appendChild(card_img);
             if (card.quantity != null){ card_elem.appendChild(card_num); }
             document.getElementById("decks").appendChild(card_elem)
+            card_elem.addEventListener("click", function () {
+                buy_card(card.id);
+            });
         }
 
         // SELF
@@ -350,20 +354,20 @@ $( document ).ready(function() {
             }
         }
 
-        // activate purple
+        // activate purple ONLY FOR CURRENT PLAYER
 
-        // update board state
-
-        // BUY PHASE
         console.info(my_game_state);
-        socket.emit("change_boardstate", my_game_state);
-        take_turn_pt3();
+        socket.emit("change_boardstate", my_game_state); // update state across players
+        take_turn_pt3(); // move to part 3
     }
     function take_turn_pt3(){
         rolling_elem.style.display = "none"; // hide prev
         buying_elem.style.display = "inline-block"; // show action
 
         // enable all card buttons
+
+        // BUY PHASE
+        buying = true;
     }
     function end_turn(){
         in_turn = false;
@@ -373,7 +377,58 @@ $( document ).ready(function() {
         socket.emit("change_boardstate", my_game_state);
         waiting_elem.style.display = "inline-block"; // back to waiting
         buying_elem.style.display = "none"; // hide action
+        ending_elem.style.display = "none"; // hide action
         
+    }
+
+    function buy_card(id){
+        if (buying){
+            console.log("attempt buy " + id);
+
+            for (x in my_game_state.market){                
+                if (my_game_state.market[x].id == id){
+                    let this_card = my_game_state.market[x];
+                    if (this_card.quantity > 0){
+                        if (parseInt(document.getElementById("coins-val").innerText) >= this_card.cost){
+                            my_game_state.market[x].quantity -= 1;
+                            add_card(this_card);
+                            console.log(id);
+                            buying = false;
+                            ending_elem.style.display = "inline-block"; // back to waiting
+                            buying_elem.style.display = "none"; // hide action
+                            socket.emit("change_boardstate", my_game_state);
+                        }else{
+                            alert("you dont have enough coins to buy this card!");
+                        }
+                    }
+                }
+            }
+        }
+    }
+    function add_card(card){
+        for (x in my_game_state.players){
+            if (my_game_state.players[x].id == self_id){
+                let this_player = my_game_state.players[x];
+                
+
+                let target_stack = null;
+                for (y in this_player.cards){
+                    if (this_player.cards[y].id == card.id){
+                        target_stack = y;
+                    }
+                }
+                if (target_stack){ // buying a dupe
+                    this_player.cards[target_stack].quantity += 1;
+                    this_player.coins -= card.cost;
+                }else{
+                    let new_card = card;
+                    new_card.quantity = 1;
+                    this_player.cards.push(new_card);
+                    this_player.coins -= card.cost;
+                }
+
+            }
+        }
     }
 });
 
