@@ -241,3 +241,19 @@ h2{
     bottom: 30px;
     color: gray;
 }
+.msg{
+    background: var(--color2);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    transition-duration: 400ms;
+}
+.msg_content{
+    color: black;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+.msg_time{
+    color: gray;
+    font-size: 10px;
+}

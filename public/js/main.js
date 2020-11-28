@@ -188,7 +188,7 @@ $( document ).ready(function() {
         // FEED
         document.getElementById("feed").innerText = "";
         for (x in state.feed){
-            document.getElementById("feed").innerText += state.feed[x] + "\n";
+            document.getElementById("feed").innerHTML += "<div class='msg'><span class='msg_content'>" + state.feed[x][0] + "</span></br><span class='msg_time'>" + state.feed[x][1] + "</span></div>";
         }
         updateScroll();
         
@@ -350,17 +350,18 @@ $( document ).ready(function() {
                     if (this_player.cards[x].color == "red"){
                         let this_card = this_player.cards[x];
                         if (this_card.activation.includes(roll)){
-                            add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated.");
-                            let take_value = this_card.value
+                            let take_value = this_card.value * this_card.quantity;
                             if (s_mall && (this_card.type == "bread" || this_card.type == "cup")) {take_value += 1} // mod for shopping mall
                             for (j in my_game_state.players){
                                 if (my_game_state.players[j].id == self_id){
                                     let affected_player = my_game_state.players[j];
                                     if (affected_player.coins >= take_value){
+                                        add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated. (Steals " + take_value + " coins from " + this_player.name);
                                         affected_player.coins -= take_value;
                                         this_player.coins += take_value;
                                     }
                                     else{
+                                        add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated. (Steals " + affected_player.coins + " coins from " + this_player.name);
                                         this_player.coins += affected_player.coins;
                                         affected_player.coins = 0;
                                     }
@@ -381,7 +382,7 @@ $( document ).ready(function() {
                     let this_card = this_player.cards[x];
                     if (this_card.activation.includes(roll)){
                         this_player.coins += this_card.value * this_card.quantity;
-                        add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated.");
+                        add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated. (+" + (this_card.value * this_card.quantity) + " coins)");
 
                         if (s_mall && (this_card.type == "bread" || this_card.type == "cup")) {this_player.coins += 1} // mod for shopping mall
                     }
@@ -397,18 +398,23 @@ $( document ).ready(function() {
                     if (this_player.cards[x].color == "green"){
                         let this_card = this_player.cards[x];
                         if (this_card.activation.includes(roll)){
-                            add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated.");
                             // exceptions
                             if (this_card.name == "Cheese Factory"){
                                 this_player.coins += (3 * parseInt(document.getElementById("cow-val").innerText)) * this_card.quantity; // 3 per cow
+                                add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated. (+" + (3 * parseInt(document.getElementById("cow-val").innerText)) * this_card.quantity + " coins)");
                             }
                             else if (this_card.name == "Furniture Factory"){ 
                                 this_player.coins += (3 * parseInt(document.getElementById("gear-val").innerText)) * this_card.quantity; // 3 per gear
+                                add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated. (+" + (3 * parseInt(document.getElementById("gear-val").innerText)) * this_card.quantity + " coins)");
                             }
                             else if (this_card.name == "Fruit and Vegetable Market"){
                                 this_player.coins += (3 * parseInt(document.getElementById("wheat-val").innerText)) * this_card.quantity; // 2 per wheat
+                                add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated. (+" + (3 * parseInt(document.getElementById("wheat-val").innerText)) * this_card.quantity + " coins)");
                             }
-                            else{ this_player.coins += this_card.value * this_card.quantity; }
+                            else{ 
+                                this_player.coins += this_card.value * this_card.quantity; 
+                                add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated. (+" + (this_card.value * this_card.quantity) + " coins)");
+                            }
                             if (s_mall && (this_card.type == "bread" || this_card.type == "cup")) {this_player.coins += 1} // mod for shopping mall
                         }
                     }
@@ -549,7 +555,10 @@ $( document ).ready(function() {
     }
 
     function add_feed_msg(msg){
-        my_game_state.feed.push(msg);
+        my_game_state.feed.push([
+            msg,
+            new Date().toLocaleTimeString()
+        ]);
     }
 
     function updateScroll(){
