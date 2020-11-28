@@ -28,6 +28,11 @@ $( document ).ready(function() {
     let s_mall = 0;
     let a_park = 0;
     let r_tower = 0;
+
+    // Other exceptions that need flags (purple cards)
+    let business_center = false;
+    let business_center_2 = false;
+    let tv_station = false;
     
 
     function start_current(id){
@@ -231,11 +236,15 @@ $( document ).ready(function() {
             card_elem.appendChild(card_tip);
 
             card_elem.className = "card";
+            card_elem.id = card.id;
             card_img.src = "../img/" + card.image; 
             card_num.innerText = "x" +  card.quantity;
             card_elem.appendChild(card_img);
             if (card.quantity != null){ card_elem.appendChild(card_num); }
             document.getElementById("field").appendChild(card_elem);
+            card_elem.addEventListener("click", function(){
+                business_center_exception_2(this.id);
+            });
         }
         document.getElementById("coins-val").innerText = self_player.coins;
         document.getElementById("bread-val").innerText = stats["bread"];
@@ -255,6 +264,8 @@ $( document ).ready(function() {
                 var opp_elem = document.createElement("div");
                 opp_elem.className = 'opp_block';
                 opp_elem.innerHTML = "<h4>" + state.players[x].name + "</h4>";
+                opp_elem.id = state.players[x].id;
+                document.getElementById("opp").appendChild(opp_elem);
                 for (let y = 0; y < state.players[x].cards.length; y++){
                     let card = state.players[x].cards[y];
 
@@ -268,13 +279,20 @@ $( document ).ready(function() {
                     card_elem.appendChild(card_tip);
 
                     card_elem.className = "card";
+                    card_elem.id = card.id;
                     card_img.src = "../img/" + card.image; 
                     card_num.innerText = "x" +  card.quantity;
                     card_elem.appendChild(card_img);
                     if (card.quantity != null){ card_elem.appendChild(card_num); }
                     opp_elem.appendChild(card_elem);
+                    card_elem.addEventListener("click", function () {
+                        business_center_exception(this.parentNode.id, this.id);
+                    })
                 }
-                document.getElementById("opp").appendChild(opp_elem)
+                
+                opp_elem.addEventListener("click", function() {
+                        tv_station_exception(this.id); // pass selection id to exception
+                });
             }
         }
     });
@@ -295,6 +313,7 @@ $( document ).ready(function() {
     let rolling_elem = document.getElementById("rolling");
     let buying_elem = document.getElementById("buying");
     let ending_elem = document.getElementById("ending");
+    let exceptions_elem = document.getElementById("exceptions");
 
     function take_turn_pt1(){ // you are currently taking your turn
         in_turn = true;
@@ -388,10 +407,58 @@ $( document ).ready(function() {
             }
         }
         // activate purple ONLY FOR CURRENT PLAYER
-
-        console.info(my_game_state);
-        socket.emit("change_boardstate", my_game_state); // update state across players
-        take_turn_pt3(); // move to part 3
+        for (y in my_game_state.players){
+            if (my_game_state.players[y].id == self_id){ // has to be your turn
+                let this_player = my_game_state.players[y];
+                for (x in this_player.cards){
+                    if (this_player.cards[x].color == "purple"){
+                        let this_card = this_player.cards[x];
+                        if (this_card.activation.includes(roll)){
+                            add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated.");
+                            if (this_card.name == "TV Station"){
+                                tv_station = true;
+                            }else if(this_card.name == "Business Center"){
+                                business_center = true;
+                            }else{
+                                let take_value = this_card.value;
+                                for (j in my_game_state.players){
+                                    if (my_game_state.players[j].id != self_id){ // affect every player but self
+                                        let affected_player = my_game_state.players[j];
+                                        if (affected_player.coins >= take_value){
+                                            affected_player.coins -= take_value;
+                                            this_player.coins += take_value;
+                                        }
+                                        else{
+                                            this_player.coins += affected_player.coins;
+                                            affected_player.coins = 0;
+                                        }
+                                        my_game_state.players[j] = affected_player;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                my_game_state.players[y] = this_player; // update player in state
+            }
+        }
+        if (tv_station){ // exception hook 1
+            rolling_elem.style.display = "none"; // hide prev
+            exceptions_elem.style.display = "inline-block"; // hide action
+            exceptions_elem.innerHTML = "";
+            exceptions_elem.innerText = "Select a player to take 5 coins from."; // specific text for tv_station
+        }
+        else if (business_center){ // exception hook 2
+            rolling_elem.style.display = "none"; // hide prev
+            exceptions_elem.style.display = "inline-block"; // hide action
+            exceptions_elem.innerHTML = "";
+            exceptions_elem.innerText = "Select someone elses card to swap..."; // specific text for business center
+        }
+        else{ // turn proceeds without exception
+            socket.emit("change_boardstate", my_game_state); // update state across players
+            take_turn_pt3(); // move to part 3
+        }
+        
     }
 
     function take_turn_pt3(){
@@ -412,6 +479,12 @@ $( document ).ready(function() {
 
     function buy_card(id){
         if (buying){
+            let this_player = null;
+            for (x in my_game_state.players){
+                if (my_game_state.players[x].id == self_id){
+                    this_player = my_game_state.players[x];
+                }
+            }
             for (x in my_game_state.market){                
                 if (my_game_state.market[x].id == id){
                     let this_card = my_game_state.market[x];
@@ -421,6 +494,7 @@ $( document ).ready(function() {
                                 my_game_state.market[x].quantity -= 1;
                             }
                             add_card(this_card);
+                            add_feed_msg(this_player.name + "   buys a " + this_card.name);
                             console.log(id);
                             buying = false;
                             ending_elem.style.display = "inline-block"; // back to waiting
@@ -448,13 +522,13 @@ $( document ).ready(function() {
                 if (target_stack){ // buying a dupe
                     this_player.cards[target_stack].quantity += 1;
                     this_player.coins -= card.cost;
-                    add_feed_msg(this_player.name + " buys another " + card.name);
+                    //add_feed_msg(this_player.name + " buys another " + card.name);
                 }else{ // buying a new card
                     let new_card = card;
                     new_card.quantity = 1;
                     this_player.cards.push(new_card);
                     this_player.coins -= card.cost;
-                    add_feed_msg(this_player.name + "   buys a " + card.name);
+                    
                 }
 
             }
@@ -468,6 +542,164 @@ $( document ).ready(function() {
     function updateScroll(){
         var element = document.getElementById("feed");
         element.scrollTop = element.scrollHeight;
+    }
+
+    let swap_card = null; // business center tracking
+    let swap_player = null;
+
+    function tv_station_exception(id){
+        if (tv_station){
+            let target_ind = null;
+            let self_ind = null;
+            for (x in my_game_state.players){
+                if (my_game_state.players[x].id == id){
+                    target_ind = x;
+                }
+                if (my_game_state.players[x].id == self_id){
+                    self_ind = x;
+                }
+            }
+    
+            if (my_game_state.players[target_ind].coins >= 5){
+                my_game_state.players[target_ind].coins -= 5;
+                my_game_state.players[self_ind].coins += 5;
+            }
+            else{
+                my_game_state.players[self_ind].coins += my_game_state.players[target_ind].coins;
+                my_game_state.players[target_ind].coins = 0;
+            }
+    
+            
+    
+            tv_station = false;
+            if (business_center){ // exception hook 2
+                rolling_elem.style.display = "none"; // hide prev
+                exceptions_elem.style.display = "inline-block"; // hide action
+                exceptions_elem.innerHTML = "";
+                exceptions_elem.innerText = "Select a player to take 5 coins from."; // specific text for tv_station
+            }else{
+                // END EXCEPTION IF THERE IS NO BUSINESS CENTER ACTIVATION
+                exceptions_elem.style.display = "none";
+                socket.emit("change_boardstate", my_game_state); // update state across players
+                take_turn_pt3(); // move to part 3
+            }
+        }
+        else{
+            console.log("action denied");
+        }
+    }
+
+    function business_center_exception(player_id, card_id){
+        console.log("BUSINESS CENTER STUFF: " + player_id, card_id);
+        if (business_center){
+            swap_card = card_id;
+            swap_player = player_id;
+
+            business_center = false;
+            business_center_2 = true;
+            exceptions_elem.innerHTML = "";
+            exceptions_elem.innerText = "Now select a card of your own to swap."; // specific text for business center
+        }
+        else{
+            console.log("action denied");
+        }
+    }
+
+    function business_center_exception_2(id){
+        if (business_center_2){
+
+            let card1 = null;
+            let card2 = null;
+            let player1 = null;
+            let player2 = null;
+
+            business_center_2 = false;
+            let new_card = null;
+            let new_card_2 = null;
+            for (y in my_game_state.players){
+                if (my_game_state.players[y].id == swap_player){
+                    player2 = my_game_state.players[y].name;
+                    for (z in my_game_state.players[y].cards){
+                        if (my_game_state.players[y].cards[z].id == swap_card){
+                            card2 = my_game_state.players[y].cards[z].name;
+                            new_card = my_game_state.players[y].cards[z];
+                        }
+                    }
+                }
+                if (my_game_state.players[y].id == self_id){
+                    player1 = my_game_state.players[y].name;
+                    for (z in my_game_state.players[y].cards){
+                        if (my_game_state.players[y].cards[z].id == id){
+                            card1 = my_game_state.players[y].cards[z].name;
+                            new_card_2 = my_game_state.players[y].cards[z];
+                        }
+                    }
+                }
+            }
+            for (x in my_game_state.players){
+                if (my_game_state.players[x].id == self_id){ // self player
+                    let new_card_stack = null;
+                    let stack_id = null;
+
+                    for (y in my_game_state.players[x].cards){
+                        if (my_game_state.players[x].cards[y].id == id){ // self selected card (swap away)
+                            if (my_game_state.players[x].cards[y].quantity == 1){
+                                my_game_state.players[x].cards.splice(y, 1);
+                            }else{
+                                my_game_state.players[x].cards[y].quantity -= 1;
+                            }
+                        }
+                        if (my_game_state.players[x].cards[y].id == swap_card){ // other selected card (add one)
+                            new_card_stack = my_game_state.players[x].cards[y];
+                            stack_id = y;
+                        }
+                    }
+                    if (new_card_stack){
+                        my_game_state.players[x].cards[stack_id].quantity += 1;
+                    }
+                    else{
+                        new_card.quantity = 1;
+                        my_game_state.players[x].cards.push(new_card);
+                    }
+                }
+                else if (my_game_state.players[x].id == swap_player){ // other player
+                    let new_card_stack = null;
+                    let stack_id = null;
+
+                    for (y in my_game_state.players[x].cards){
+                        if (my_game_state.players[x].cards[y].id == swap_card){
+                            if (my_game_state.players[x].cards[y].quantity == 1){
+                                my_game_state.players[x].cards.splice(y, 1);
+                            }else{
+                                my_game_state.players[x].cards[y].quantity -= 1;
+                            }
+                        }
+                        if (my_game_state.players[x].cards[y].id == id){ // other selected card (add one)
+                            new_card_stack = my_game_state.players[x].cards[y];
+                            stack_id = y;
+                        }
+                    }
+                    if (new_card_stack){
+                        my_game_state.players[x].cards[stack_id].quantity += 1;
+                    }
+                    else{
+                        new_card_2.quantity = 1;
+                        my_game_state.players[x].cards.push(new_card_2);
+                    }
+                }
+            }
+            add_feed_msg("Swapped " + player2 + "'s " + card2 + " for " + player1 + "'s " + card1);
+
+            // END EXCEPTIONS
+            exceptions_elem.style.display = "none";
+            swap_player = null;
+            swap_card = null;
+            socket.emit("change_boardstate", my_game_state); // update state across players
+            take_turn_pt3(); // move to part 3
+        }
+        else{
+            console.log("action denied");
+        }
     }
 });
 
