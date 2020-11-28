@@ -236,3 +236,8 @@ h2{
     padding: 10px;
     background-color: var(--color3);
 }
+#credits{
+    position: absolute;
+    bottom: 30px;
+    color: gray;
+}
