@@ -92,7 +92,7 @@ class BoardState { // create a new board state
             new CardType("Stadium", "Stadium.svg", "purple", "tower", 2, 7, [6], 4,
             "STADIUM\nActivation: 6\n Cost: 6\nGet 2 coins from all players, on your turn only.", 13), 
 
-            new CardType("TV Station", "TV_Station.svg", "purple", "tower", null, 7, [1, 6], 4,
+            new CardType("TV Station", "TV_Station.svg", "purple", "tower", null, 7, [6], 4,
             "TV STATION\nActivation: 6\n Cost: 7\nTake 5 coins from any one player, on your turn only.", 14), 
 
             new CardType("Business Center", "Business_Center.svg", "purple", "tower", null, 8, [6], 4,

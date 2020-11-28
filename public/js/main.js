@@ -66,7 +66,7 @@ $( document ).ready(function() {
     // dice (in game)
     document.getElementById("roll2").disabled = true; 
     document.getElementById("roll1").addEventListener("click", function () {
-        let roll = 1 + Math.floor(Math.random()*1);             // CHANGED FOR TESTING, SHOULD BE 6;
+        let roll = 1 + Math.floor(Math.random()*6);             // CHANGED FOR TESTING, SHOULD BE 6;
         document.getElementById("roll_num").innerText = roll;
         take_turn_pt2(roll);
     });
