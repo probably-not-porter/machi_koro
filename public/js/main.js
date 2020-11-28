@@ -14,8 +14,9 @@ $( document ).ready(function() {
         self_name = prompt("Choose a Display Name");
         localStorage['self_name'] = self_name;
     }
-    
+    document.getElementById("your_name").innerText = "Player: " + self_name;
     document.getElementById('player_name').innerText = self_name;
+
     let in_game = false;
     let my_game_state = null;
     let in_turn = false;
@@ -43,6 +44,14 @@ $( document ).ready(function() {
 
 
     // BUTTON LISTENERS
+
+    // change name
+    document.getElementById("change_name").addEventListener("click", function() {
+        self_name = prompt("Choose a Display Name");
+        localStorage['self_name'] = self_name;
+        document.getElementById("your_name").innerText = "Player: " + self_name;
+        document.getElementById('player_name').innerText = self_name;
+    });
 
     // create new game (lobby)
     document.getElementById("new_game").addEventListener("click", function () {
@@ -101,7 +110,7 @@ $( document ).ready(function() {
                     document.getElementById("game").style.zIndex = 1;
                     document.getElementById("waiting_lobby").style.zIndex = 0;
                 }
-                document.getElementById("game_name").innerText = "Game: " + current_game.name + " Lobby";
+                document.getElementById("game_name").innerText = current_game.name.toUpperCase() + "\ngame lobby";
                 document.getElementById("game_players").innerText = current_game.players.length + "/4 (waiting)";
                 document.getElementById("game_players_list").innerHTML = "";
                 for (x in current_game.players){
