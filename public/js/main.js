@@ -159,6 +159,7 @@ $( document ).ready(function() {
     });
 
     socket.on("update_boardstate", function (state) { // display new boardstate
+        console.log(state);
         my_game_state = state;
         // CHECK FOR WIN
         if (s_mall + r_tower + a_park + t_station == 4){
@@ -479,7 +480,10 @@ $( document ).ready(function() {
 
     function end_turn(){
         in_turn = false;
-        if (extra_turn == false){ my_game_state.turn = (my_game_state.turn + 1) % my_game_state.players.length; }
+        if (extra_turn == false){ 
+            my_game_state.turn = (my_game_state.turn + 1) % my_game_state.players.length; 
+            extra_turn = false;
+        }
         socket.emit("change_boardstate", my_game_state);
         waiting_elem.style.display = "inline-block"; // back to waiting
         buying_elem.style.display = "none"; // hide action
@@ -500,7 +504,7 @@ $( document ).ready(function() {
                     if (this_card.quantity > 0 || this_card.quantity == null){
                         if (parseInt(document.getElementById("coins-val").innerText) >= this_card.cost){
                             if (my_game_state.market[x].quantity != null){
-                                my_game_state.market[x].quantity -= 1;
+                                my_game_state.market[x].quantity = my_game_state.market[x].quantity - 1;
                             }
                             add_card(this_card);
                             add_feed_msg(this_player.name + "   buys a " + this_card.name);

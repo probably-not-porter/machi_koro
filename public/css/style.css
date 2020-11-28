@@ -81,6 +81,7 @@ html, body{
     height: 70vh;
     display: inline-block;
     font-size: 12px;
+    overflow-y: scroll;
 }
 .opp_block{
     border: 1px solid black;
@@ -209,7 +210,7 @@ h2{
     text-align: center;
 }
 #feed{
-    overflow: scroll;
+    overflow-y: scroll;
     width: 20vw;
     height: 20vw;
     font-size: 12px;
