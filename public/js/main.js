@@ -1,3 +1,6 @@
+// MACHI KORO
+// CLIENT SIDE
+
 $( document ).ready(function() {
     const socket = io();
 
@@ -6,7 +9,6 @@ $( document ).ready(function() {
         self_id = makeid(12);
         localStorage['self_id'] = self_id;
     }
-
     var self_name = localStorage['self_name'] || null; // cache name
     if (self_name == null){
         self_name = prompt("Choose a Display Name");
@@ -14,15 +16,15 @@ $( document ).ready(function() {
     }
     
     document.getElementById('player_name').innerText = self_name;
-    
     let in_game = false;
     let my_game_state = null;
     let in_turn = false;
     let my_game_id = null;
     let buying = false;
-
+    let extra_turn = false;
 
     // WINCONS
+    let t_station = 0;
     let s_mall = 0;
     let a_park = 0;
     let r_tower = 0;
@@ -49,20 +51,20 @@ $( document ).ready(function() {
 
     // dice (in game)
     document.getElementById("roll2").disabled = true; 
-
     document.getElementById("roll1").addEventListener("click", function () {
-        let roll = 1 + Math.floor(Math.random()*6);
+        let roll = 1 + Math.floor(Math.random()*1);             // CHANGED FOR TESTING, SHOULD BE 6;
         document.getElementById("roll_num").innerText = roll;
-        // check cards
-
-        //socket.emit("dice_roll", roll, self_id, my_game_id);
         take_turn_pt2(roll);
     });
     document.getElementById("roll2").addEventListener("click", function () {
         let roll = 1 + Math.floor(Math.random()*6);
         let roll2 = 1 + Math.floor(Math.random()*6);
         document.getElementById("roll_num").innerText = roll + ", " + roll2;
-        // check cards
+        if (roll == roll2 && a_park == 1){ // take an extra turn if you roll doubles and have amusement park
+            console.log("take an extra turn");
+            extra_turn = true;
+        }
+        take_turn_pt2(roll + roll2);
     });
 
     // end turn
@@ -94,7 +96,7 @@ $( document ).ready(function() {
                     document.getElementById("game").style.zIndex = 1;
                     document.getElementById("waiting_lobby").style.zIndex = 0;
                 }
-                document.getElementById("game_name").innerText = "Game: " + current_game.name + "Lobby";
+                document.getElementById("game_name").innerText = "Game: " + current_game.name + " Lobby";
                 document.getElementById("game_players").innerText = current_game.players.length + "/4 (waiting)";
                 document.getElementById("game_players_list").innerHTML = "";
                 for (x in current_game.players){
@@ -145,8 +147,13 @@ $( document ).ready(function() {
     socket.on("update_boardstate", function (state) { // display new boardstate
         my_game_state = state;
         // CHECK FOR WIN
-        if (s_mall + r_tower + a_park == 3){
+        if (s_mall + r_tower + a_park + t_station == 4){
             alert("You Won!");
+        }
+
+        // Update dice for a_park
+        if (t_station == 1){
+            document.getElementById("roll2").disabled = false;
         }
 
         // CHECK FOR MY TURN
@@ -207,6 +214,7 @@ $( document ).ready(function() {
         for (let x = 0; x < self_player.cards.length; x++){
             let card = self_player.cards[x];
 
+            if (card.name == "Train Station"){t_station = 1;}
             if (card.name == "Shopping Mall"){s_mall = 1;}
             if (card.name == "Amusement Park"){a_park = 1;}
             if (card.name == "Radio Tower"){r_tower = 1;}
@@ -292,27 +300,19 @@ $( document ).ready(function() {
         in_turn = true;
         // hide waiting action because its your turn
         waiting_elem.style.display = "none";
-
         // ROLL PHASE
         rolling_elem.style.display = "inline-block"; // show action
-        // if player has two dice,
-        // document.getElementById("roll2").disabled = false; 
-
-
         // WAITING FOR DICE ROLL
     }
+
     function take_turn_pt2(roll){
         let self_player = null;
-        
         for (x in my_game_state.players){
             if (my_game_state.players[x].id == self_id){
                 self_player = my_game_state.players[x]
             }
         }
-
-
         add_feed_msg(self_player.name + " rolled a " + roll + ".");
-
         // activate red ONLY FOR OTHER PLAYERS
         for (y in my_game_state.players){
             if (my_game_state.players[y].id != self_id){ // has to be your turn
@@ -324,12 +324,9 @@ $( document ).ready(function() {
                             add_feed_msg(this_player.name + "'s " + this_card.name + "(s) is activated.");
                             let take_value = this_card.value
                             if (s_mall && (this_card.type == "bread" || this_card.type == "cup")) {take_value += 1} // mod for shopping mall
-                            // y = current player, so y - 1 % player_num is the target, since it moves counter-clockwise
-
                             for (j in my_game_state.players){
                                 if (my_game_state.players[j].id == self_id){
                                     let affected_player = my_game_state.players[j];
-
                                     if (affected_player.coins >= take_value){
                                         affected_player.coins -= take_value;
                                         this_player.coins += take_value;
@@ -338,7 +335,6 @@ $( document ).ready(function() {
                                         this_player.coins += affected_player.coins;
                                         affected_player.coins = 0;
                                     }
-
                                     my_game_state.players[j] = affected_player;
                                 }
                             }
@@ -364,7 +360,6 @@ $( document ).ready(function() {
             }
             my_game_state.players[y] = this_player; // update player in state
         }
-
         // activate green ONLY FOR CURRENT PLAYER
         for (y in my_game_state.players){
             if (my_game_state.players[y].id == self_id){ // has to be your turn
@@ -384,10 +379,7 @@ $( document ).ready(function() {
                             else if (this_card.name == "Fruit and Vegetable Market"){
                                 this_player.coins += (3 * parseInt(document.getElementById("wheat-val").innerText)) * this_card.quantity; // 2 per wheat
                             }
-                            else{
-                                this_player.coins += this_card.value * this_card.quantity;
-                            }
-
+                            else{ this_player.coins += this_card.value * this_card.quantity; }
                             if (s_mall && (this_card.type == "bread" || this_card.type == "cup")) {this_player.coins += 1} // mod for shopping mall
                         }
                     }
@@ -395,41 +387,39 @@ $( document ).ready(function() {
                 my_game_state.players[y] = this_player; // update player in state
             }
         }
-
         // activate purple ONLY FOR CURRENT PLAYER
 
         console.info(my_game_state);
         socket.emit("change_boardstate", my_game_state); // update state across players
         take_turn_pt3(); // move to part 3
     }
+
     function take_turn_pt3(){
         rolling_elem.style.display = "none"; // hide prev
         buying_elem.style.display = "inline-block"; // show action
         // BUY PHASE
         buying = true;
     }
+
     function end_turn(){
         in_turn = false;
-
-        my_game_state.turn = (my_game_state.turn + 1) % my_game_state.players.length;
-
+        if (extra_turn == false){ my_game_state.turn = (my_game_state.turn + 1) % my_game_state.players.length; }
         socket.emit("change_boardstate", my_game_state);
         waiting_elem.style.display = "inline-block"; // back to waiting
         buying_elem.style.display = "none"; // hide action
         ending_elem.style.display = "none"; // hide action
-        
     }
 
     function buy_card(id){
         if (buying){
-            console.log("attempt buy " + id);
-
             for (x in my_game_state.market){                
                 if (my_game_state.market[x].id == id){
                     let this_card = my_game_state.market[x];
-                    if (this_card.quantity > 0){
+                    if (this_card.quantity > 0 || this_card.quantity == null){
                         if (parseInt(document.getElementById("coins-val").innerText) >= this_card.cost){
-                            my_game_state.market[x].quantity -= 1;
+                            if (my_game_state.market[x].quantity != null){
+                                my_game_state.market[x].quantity -= 1;
+                            }
                             add_card(this_card);
                             console.log(id);
                             buying = false;
@@ -444,12 +434,11 @@ $( document ).ready(function() {
             }
         }
     }
+
     function add_card(card){
         for (x in my_game_state.players){
             if (my_game_state.players[x].id == self_id){
                 let this_player = my_game_state.players[x];
-                
-
                 let target_stack = null;
                 for (y in this_player.cards){
                     if (this_player.cards[y].id == card.id){
@@ -471,6 +460,7 @@ $( document ).ready(function() {
             }
         }
     }
+
     function add_feed_msg(msg){
         my_game_state.feed.push(msg);
     }
