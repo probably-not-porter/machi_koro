@@ -273,7 +273,7 @@ $( document ).ready(function() {
             if (state.players[x] != self_player){
                 var opp_elem = document.createElement("div");
                 opp_elem.className = 'opp_block';
-                opp_elem.innerHTML = "<h4>" + state.players[x].name + "</h4>";
+                opp_elem.innerHTML = "<h4>" + state.players[x].name + " - <img style='width: 12px; height: 12px' src='./icon/coin.png'> " + state.players[x].coins + "</h4>";
                 opp_elem.id = state.players[x].id;
                 document.getElementById("opp").appendChild(opp_elem);
                 for (let y = 0; y < state.players[x].cards.length; y++){
