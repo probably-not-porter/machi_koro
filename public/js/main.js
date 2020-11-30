@@ -508,7 +508,8 @@ $( document ).ready(function() {
                 if (my_game_state.market[x].id == id){
                     let this_card = my_game_state.market[x];
                     if (this_card.quantity > 0 || this_card.quantity == null){
-                        if (parseInt(document.getElementById("coins-val").innerText) >= this_card.cost){
+                        if (parseInt(document.getElementById("coins-val").innerText) > this_card.cost - 1){
+                            console.log(my_game_state.market[x].quantity);
                             if (my_game_state.market[x].quantity != null){
                                 my_game_state.market[x].quantity = my_game_state.market[x].quantity - 1;
                             }
@@ -543,7 +544,7 @@ $( document ).ready(function() {
                     this_player.coins -= card.cost;
                     //add_feed_msg(this_player.name + " buys another " + card.name);
                 }else{ // buying a new card
-                    let new_card = card;
+                    let new_card = JSON.parse(JSON.stringify(card)); // deep copy
                     new_card.quantity = 1;
                     this_player.cards.push(new_card);
                     this_player.coins -= card.cost;
