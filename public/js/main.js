@@ -57,11 +57,19 @@ $( document ).ready(function() {
     document.getElementById("new_game").addEventListener("click", function () {
         var name = prompt("Enter a name for your game");
         if (name){
-            socket.emit("create_game", [name, makeid(10), self_id, self_name]);
+            my_game_id = makeid(10);
+            socket.emit("create_game", [name, my_game_id, self_id, self_name]);
             document.getElementById("lobby").style.zIndex = 0;
             document.getElementById("waiting_lobby").style.zIndex = 1;
         }
     }); 
+
+    // leave game
+    document.getElementById("leave_game").addEventListener("click", function() {
+        socket.emit("leave_game", [my_game_id, self_id]);
+        document.getElementById("lobby").style.zIndex = 1;
+        document.getElementById("waiting_lobby").style.zIndex = 0;
+    });
 
     // dice (in game)
     document.getElementById("roll2").disabled = true; 

@@ -146,6 +146,26 @@ io.on("connection", function (socket) {
             console.log("GAME DOESNT EXIST!");
         }
     });
+    socket.on("leave_game", function(data) {
+        console.log("--> Leaving game");
+        socket.leave(data[0])
+        for (x in _game_list){
+            if (_game_list[x].id == data[0]){
+                if (_game_list[x].players.length == 1){
+                    _game_list.splice(x, 1);
+                    io.emit("receive_gamelist", _game_list);
+                }else{
+                    for (y in _game_list[x].players){
+                        if (_game_list[x].players[y].id == data[1]){
+                            _game_list[x].players.splice(y, 1);
+                            io.emit("receive_gamelist", _game_list);
+                        }
+                    }
+                }
+            }
+        }
+        
+    });
     socket.on("start_game", function(id) {
         console.log("--> Starting game " + id);
         for (x in _game_list){
