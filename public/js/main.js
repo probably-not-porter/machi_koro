@@ -517,17 +517,27 @@ $( document ).ready(function() {
                     let this_card = my_game_state.market[x];
                     if (this_card.quantity > 0 || this_card.quantity == null){
                         if (parseInt(document.getElementById("coins-val").innerText) > this_card.cost - 1){
-                            console.log(my_game_state.market[x].quantity);
-                            if (my_game_state.market[x].quantity != null){
-                                my_game_state.market[x].quantity = my_game_state.market[x].quantity - 1;
+                            let hasCard = false;
+                            for (y in this_player.cards){
+                                if (this_player.cards[y].name == this_card.name){
+                                    hasCard = true;
+                                }
                             }
-                            add_card(this_card);
-                            add_feed_msg(this_player.name + "   buys a " + this_card.name);
-                            console.log(id);
-                            buying = false;
-                            ending_elem.style.display = "inline-block"; // back to waiting
-                            buying_elem.style.display = "none"; // hide action
-                            socket.emit("change_boardstate", my_game_state);
+                            if (hasCard == true && this_card.color == "gold"){
+                                alert("You can only have one of each landmark!");
+                            }else{
+                                console.log(my_game_state.market[x].quantity);
+                                if (my_game_state.market[x].quantity != null){
+                                    my_game_state.market[x].quantity = my_game_state.market[x].quantity - 1;
+                                }
+                                add_card(this_card);
+                                add_feed_msg(this_player.name + "   buys a " + this_card.name);
+                                console.log(id);
+                                buying = false;
+                                ending_elem.style.display = "inline-block"; // back to waiting
+                                buying_elem.style.display = "none"; // hide action
+                                socket.emit("change_boardstate", my_game_state);
+                            }
                         }else{
                             alert("you dont have enough coins to buy this card!");
                         }
