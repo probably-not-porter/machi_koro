@@ -166,6 +166,9 @@ io.on("connection", function (socket) {
         }
         
     });
+    socket.on("reset", function() {
+        _game_list = [];
+    });
     socket.on("start_game", function(id) {
         console.log("--> Starting game " + id);
         for (x in _game_list){
