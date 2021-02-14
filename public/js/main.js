@@ -12,6 +12,9 @@ $( document ).ready(function() {
     var self_name = localStorage['self_name'] || null; // cache name
     if (self_name == null){
         self_name = prompt("Choose a Display Name");
+        if (self_name.length > 40){
+            self_name = self_name.slice(0,40);
+        }
         
         localStorage['self_name'] = self_name;
     }
