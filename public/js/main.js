@@ -134,10 +134,10 @@ $( document ).ready(function() {
                     li.innerText = current_game.players[x].name;
                     document.getElementById("game_players_list").appendChild(li);
                 }
-                if (current_game.players.length > 1){
+                if (current_game.players.length > 1 && current_game.players[0].id == self_id){
                     document.getElementById("waiting-button-wrapper").innerHTML = "<button class='button' id='button-"+current_game.id+"'>START GAME</button>";
                     document.getElementById("button-" + current_game.id).addEventListener("click", function () {
-                        start_current(current_game.id)
+                        start_current(current_game.id);
                     });
                 }
             }
