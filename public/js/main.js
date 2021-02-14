@@ -17,6 +17,7 @@ $( document ).ready(function() {
     }
     if (self_name.length > 40){
         localStorage['self_name'] = self_name.slice(0,40);
+        self_name = self_name.slice(0,40);
     }
     document.getElementById("your_name").innerText = "Player: " + self_name;
     document.getElementById('player_name').innerText = self_name;
